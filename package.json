@@ -1,0 +1,17 @@
+{
+  "name": "swapps-design-system",
+  "private": true,
+  "packageManager": "pnpm@10.8.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev:docs": "pnpm --filter docs dev",
+    "build:docs": "pnpm --filter docs build",
+    "build:ui": "pnpm --filter @swapps/ui build",
+    "test": "pnpm --filter @swapps/ui test",
+    "typecheck": "pnpm -r run typecheck",
+    "build": "pnpm build:ui && pnpm build:docs",
+    "clean": "pnpm -r run clean"
+  }
+}
