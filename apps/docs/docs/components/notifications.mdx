@@ -1,0 +1,46 @@
+---
+sidebar_position: 9
+title: Notifications
+---
+
+# Notifications
+
+Notifications are provided by IBM Carbon. Use `InlineNotification` for in-page messages and `ToastNotification` for transient alerts.
+
+## Inline notification
+
+```tsx
+import { InlineNotification } from '@carbon/react';
+
+<InlineNotification
+  kind="success"
+  title="Experiment saved"
+  subtitle="Your changes have been saved successfully."
+/>
+```
+
+## Toast notification
+
+```tsx
+import { ToastNotification } from '@carbon/react';
+
+<ToastNotification
+  kind="error"
+  title="Connection lost"
+  subtitle="Unable to reach the data server. Retrying..."
+  timeout={5000}
+/>
+```
+
+## Notification kinds
+
+| Kind | Use |
+|---|---|
+| `info` | General information |
+| `success` | Completed action |
+| `warning` | Potential issue |
+| `error` | Failure or problem |
+
+## Reference
+
+See the [Carbon Notification documentation](https://react.carbondesignsystem.com/?path=/story/components-notifications-inline--default).

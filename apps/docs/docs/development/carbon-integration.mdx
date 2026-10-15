@@ -1,0 +1,63 @@
+---
+sidebar_position: 2
+title: Carbon Integration
+---
+
+# Carbon integration
+
+The SWAPPS Design System is built on [IBM Carbon](https://carbondesignsystem.com/).
+
+## What Carbon provides
+
+Carbon is the underlying design and component foundation. It provides:
+
+- **UI primitives** — Buttons, inputs, dropdowns, tables, modals, notifications, and more.
+- **Design tokens** — Colors, typography, spacing, and layout values.
+- **Accessibility** — ARIA patterns, keyboard navigation, focus management.
+- **Theming** — Light and dark mode support through theme tokens.
+- **Grid system** — Responsive layout grid.
+
+## What SWAPPS adds
+
+SWAPPS components focus on **application-level patterns** that Carbon does not provide as single components:
+
+- Configurable application headers with organization branding
+- Navigation patterns for scientific applications
+- Application shell layouts
+- Theme configuration for multi-organization use
+
+## Using Carbon components directly
+
+Applications can and should use Carbon components alongside SWAPPS components:
+
+```tsx
+import { AppHeader } from '@swapps/ui';
+import { Button, TextInput, DataTable } from '@carbon/react';
+```
+
+There is no conflict. SWAPPS components are built _on_ Carbon, so they share the same design language.
+
+## Carbon styles
+
+Carbon requires its stylesheet to be loaded. Include it in your application entry point:
+
+```tsx
+// Pre-compiled CSS
+import '@carbon/react/es/styles.css';
+```
+
+Or with Sass for more control:
+
+```scss
+@use '@carbon/react';
+```
+
+## Carbon version
+
+The `@swapps/ui` package declares `@carbon/react` as a dependency. The version is managed by the package and should not need to be installed separately.
+
+## Resources
+
+- [Carbon React documentation](https://react.carbondesignsystem.com/)
+- [Carbon design guidelines](https://carbondesignsystem.com/)
+- [Carbon GitHub](https://github.com/carbon-design-system/carbon)

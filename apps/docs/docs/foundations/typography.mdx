@@ -1,0 +1,37 @@
+---
+sidebar_position: 3
+title: Typography
+---
+
+# Typography
+
+## Approach
+
+The SWAPPS Design System follows IBM Carbon's [typography guidelines](https://carbondesignsystem.com/elements/typography/overview/). Carbon uses the IBM Plex font family and provides a well-tested type scale.
+
+## Type scale
+
+Carbon defines a set of type styles for different content roles:
+
+| Style | Use |
+|---|---|
+| `heading-01` through `heading-07` | Section headings |
+| `body-compact-01`, `body-compact-02` | Body text in dense layouts |
+| `body-01`, `body-02` | Standard body text |
+| `label-01`, `label-02` | Form labels and captions |
+| `code-01`, `code-02` | Code and monospaced content |
+
+See Carbon's [type token reference](https://carbondesignsystem.com/elements/typography/type-sets/) for the full list.
+
+## Font
+
+Carbon uses **IBM Plex** (Sans, Mono, Serif). Applications using the SWAPPS Design System should load IBM Plex or fall back to system fonts.
+
+If IBM Plex is not loaded, Carbon's styles fall back to a system font stack.
+
+## Guidance
+
+- Use Carbon's type tokens rather than specifying font sizes directly.
+- Maintain a clear visual hierarchy — headings, body text, labels, and captions should be distinct.
+- Ensure body text is at least 14px (Carbon's `body-compact-01`) for readability.
+- Use appropriate line heights — Carbon's tokens handle this.

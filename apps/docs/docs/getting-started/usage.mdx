@@ -1,0 +1,85 @@
+---
+sidebar_position: 3
+title: Usage
+---
+
+# Using the design system
+
+## Basic setup
+
+After installing `@swapps/ui` and loading Carbon styles, import the components you need:
+
+```tsx
+import { AppHeader } from '@swapps/ui';
+```
+
+## Example: Application header
+
+The `AppHeader` component provides a configurable application header built on Carbon's UI Shell.
+
+```tsx
+import { AppHeader } from '@swapps/ui';
+
+function App() {
+  return (
+    <>
+      <AppHeader
+        orgName="SLAC"
+        appTitle="Experiment Tracker"
+        navItems={[
+          { label: 'Dashboard', href: '/dashboard' },
+          { label: 'Experiments', href: '/experiments' },
+          { label: 'Settings', href: '/settings' },
+        ]}
+      />
+      <main id="main-content">
+        {/* Your application content */}
+      </main>
+    </>
+  );
+}
+```
+
+## Configuring for your organization
+
+Components accept organization-specific configuration through props — not through global overrides.
+
+For example, another laboratory can use the same `AppHeader` with their own identity:
+
+```tsx
+<AppHeader
+  orgName="Fermilab"
+  appTitle="Beam Monitor"
+  navItems={[
+    { label: 'Status', href: '/status' },
+    { label: 'History', href: '/history' },
+  ]}
+  logo={<img src="/fermilab-logo.svg" alt="Fermilab" height={20} />}
+/>
+```
+
+No code changes to the library are required. The component API separates shared behavior from organization-specific identity.
+
+## What comes from Carbon?
+
+SWAPPS components build on IBM Carbon for foundational UI elements. You can use Carbon components directly alongside `@swapps/ui`:
+
+```tsx
+import { Button, TextInput } from '@carbon/react';
+
+function MyForm() {
+  return (
+    <form>
+      <TextInput id="name" labelText="Experiment name" />
+      <Button type="submit">Create</Button>
+    </form>
+  );
+}
+```
+
+See the [Carbon integration guide](/docs/development/carbon-integration) for details on using Carbon components.
+
+## Next steps
+
+- [AppHeader component](/docs/components/app-header) — Full API reference and interactive preview.
+- [Themes](/docs/themes/overview) — Configure light/dark mode and branding.

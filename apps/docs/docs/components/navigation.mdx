@@ -1,0 +1,29 @@
+---
+sidebar_position: 3
+title: Navigation
+---
+
+# Navigation
+
+:::info Planned
+A dedicated navigation component is planned. It will provide a configurable sidebar or panel navigation pattern built on Carbon's `SideNav` component.
+
+In the meantime, use Carbon's [UI Shell](https://react.carbondesignsystem.com/?path=/story/components-ui-shell--header-base-w-side-nav) components directly for navigation needs.
+:::
+
+## Current approach
+
+For header-level navigation, see the [AppHeader](/docs/components/app-header) component, which supports `navItems` in the top navigation bar.
+
+For side navigation, use Carbon's `SideNav`, `SideNavItems`, and `SideNavLink` components:
+
+```tsx
+import { SideNav, SideNavItems, SideNavLink } from '@carbon/react';
+
+<SideNav aria-label="Side navigation">
+  <SideNavItems>
+    <SideNavLink href="/dashboard">Dashboard</SideNavLink>
+    <SideNavLink href="/experiments">Experiments</SideNavLink>
+  </SideNavItems>
+</SideNav>
+```

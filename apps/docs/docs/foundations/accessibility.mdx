@@ -1,0 +1,53 @@
+---
+sidebar_position: 5
+title: Accessibility
+---
+
+# Accessibility
+
+Accessibility is a foundational requirement of the SWAPPS Design System, not an optional enhancement.
+
+## Standards
+
+The design system targets **WCAG 2.1 AA** compliance as a baseline. This includes:
+
+- **Perceivable** — Content is available to all senses (e.g., text alternatives for images, sufficient color contrast).
+- **Operable** — Interfaces are usable via keyboard, touch, and assistive technology.
+- **Understandable** — Content and behavior are predictable and clear.
+- **Robust** — Content works with current and future assistive technologies.
+
+## Component-level requirements
+
+Every component in the design system should:
+
+- Use **semantic HTML** elements (`<nav>`, `<header>`, `<main>`, `<button>`, etc.).
+- Support **keyboard navigation** — all interactive elements must be reachable and operable with a keyboard.
+- Provide **visible focus indicators** — users must be able to see which element has focus.
+- Include **accessible labels** — ARIA labels, roles, and properties where native semantics are insufficient.
+- Support **screen readers** — content and state changes must be announced.
+- Maintain **color contrast** — at least 4.5:1 for normal text, 3:1 for large text (WCAG AA).
+
+## Carbon's accessibility foundation
+
+IBM Carbon components are built with accessibility in mind. By building on Carbon, the SWAPPS Design System inherits:
+
+- Tested keyboard navigation patterns
+- ARIA attribute conventions
+- Focus management utilities
+- Reduced-motion support
+
+## Testing
+
+- **Automated testing** catches some issues (missing labels, contrast violations) but does not replace manual testing.
+- **Keyboard testing** — navigate every interactive flow using only the keyboard.
+- **Screen reader testing** — verify announcements with at least one screen reader (e.g., VoiceOver on macOS).
+
+:::caution Compliance is not automatic
+Using accessible components does not guarantee an accessible application. Application-level concerns — focus management between views, route announcements, dynamic content updates — require attention at the application layer.
+:::
+
+## Resources
+
+- [WCAG 2.1](https://www.w3.org/TR/WCAG21/)
+- [Carbon accessibility guidelines](https://carbondesignsystem.com/guidelines/accessibility/overview/)
+- [WebAIM contrast checker](https://webaim.org/resources/contrastchecker/)

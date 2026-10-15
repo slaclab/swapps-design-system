@@ -1,0 +1,50 @@
+---
+sidebar_position: 4
+title: Application Shell
+---
+
+# Application shell
+
+:::info Planned
+An `AppShell` component is planned that will combine the header, navigation, and content area into a single configurable layout.
+
+This will provide a standard application skeleton for SWAPPS applications.
+:::
+
+## Intended behavior
+
+The application shell will:
+
+- Render the AppHeader at the top
+- Optionally render side navigation
+- Provide a main content area with appropriate spacing
+- Handle responsive behavior (collapsing navigation on smaller screens)
+
+## Current approach
+
+Today, compose the application shell manually:
+
+```tsx
+import { AppHeader } from '@swapps/ui';
+import { Content } from '@carbon/react';
+
+function App() {
+  return (
+    <>
+      <AppHeader
+        orgName="SLAC"
+        appTitle="My Application"
+        navItems={[
+          { label: 'Home', href: '/' },
+          { label: 'Data', href: '/data' },
+        ]}
+      />
+      <Content>
+        <main id="main-content">
+          {/* Application content */}
+        </main>
+      </Content>
+    </>
+  );
+}
+```

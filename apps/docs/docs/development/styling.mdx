@@ -1,0 +1,49 @@
+---
+sidebar_position: 4
+title: Styling
+---
+
+# Styling conventions
+
+## Use Carbon tokens
+
+Prefer Carbon's design tokens over hardcoded values:
+
+```scss
+// Good
+background-color: $layer-01;
+padding: $spacing-05;
+
+// Avoid
+background-color: #f4f4f4;
+padding: 16px;
+```
+
+## SWAPPS class naming
+
+For custom styles in SWAPPS components, use the `swapps-` prefix:
+
+```css
+.swapps-header__logo { }
+.swapps-app-shell__sidebar { }
+```
+
+This avoids conflicts with Carbon's `cds--` prefixed classes.
+
+## CSS-in-JS
+
+The current approach uses plain CSS/Sass classes. CSS-in-JS libraries are not used at this time.
+
+## Sass
+
+The UI package includes `sass` as a dev dependency for compiling Carbon styles during development and testing. Consumer applications need their own Sass setup if they use Sass imports rather than pre-compiled CSS.
+
+## Avoiding style conflicts
+
+When embedding SWAPPS/Carbon components in other environments (like the Docusaurus documentation site), use a scoped container class to isolate styles:
+
+```css
+.swapps-preview__content {
+  /* Contains Carbon-styled components without affecting the host page */
+}
+```

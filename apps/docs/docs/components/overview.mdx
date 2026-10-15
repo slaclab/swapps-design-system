@@ -1,0 +1,41 @@
+---
+sidebar_position: 1
+title: Overview
+---
+
+# Components
+
+The SWAPPS Design System provides reusable application-level components built on IBM Carbon.
+
+## Component categories
+
+### SWAPPS components
+
+These components address patterns that go beyond individual UI elements. They standardize how applications are structured:
+
+| Component | Status | Description |
+|---|---|---|
+| [AppHeader](/docs/components/app-header) | **Available** | Configurable application header with organization branding |
+| Navigation | Planned | Application-level navigation patterns |
+| AppShell | Planned | Combined header, navigation, and content layout |
+
+### Carbon components
+
+For foundational UI primitives, use [IBM Carbon](https://carbondesignsystem.com/components/overview/) directly:
+
+| Component | Carbon package |
+|---|---|
+| Buttons | `@carbon/react` — `Button` |
+| Text inputs | `@carbon/react` — `TextInput` |
+| Data tables | `@carbon/react` — `DataTable` |
+| Modals | `@carbon/react` — `Modal` |
+| Notifications | `@carbon/react` — `InlineNotification`, `ToastNotification` |
+| Dropdowns | `@carbon/react` — `Dropdown` |
+
+See the [Carbon React documentation](https://react.carbondesignsystem.com/) for the full component catalog.
+
+## Design decisions
+
+- **Build on Carbon** — Don't recreate buttons, inputs, or other primitives.
+- **Focus on application patterns** — Headers, navigation, and layout shells are where cross-application consistency matters most.
+- **Keep APIs configurable** — Components accept organization-specific values through props, not through code changes.

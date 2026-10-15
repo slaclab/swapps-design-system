@@ -1,0 +1,79 @@
+---
+sidebar_position: 1
+title: Setup
+---
+
+# Development setup
+
+## Prerequisites
+
+- **Node.js** 20 or later
+- **pnpm** 10 or later
+- **Git**
+
+## Clone and install
+
+```bash
+git clone https://github.com/slaclab/swapps-design-system.git
+cd swapps-design-system
+pnpm install
+```
+
+## Development commands
+
+Run these from the repository root:
+
+| Command | Description |
+|---|---|
+| `pnpm dev:docs` | Start the Docusaurus development server |
+| `pnpm build:docs` | Build the documentation website |
+| `pnpm build:ui` | Build the UI component package |
+| `pnpm test` | Run component tests |
+| `pnpm typecheck` | Run TypeScript checks across all packages |
+| `pnpm build` | Build both the UI package and documentation |
+
+## Project structure
+
+```
+swapps-design-system/
+├── apps/
+│   └── docs/          # Docusaurus documentation website
+├── packages/
+│   └── ui/            # @swapps/ui React component library
+├── .github/
+│   └── workflows/     # CI configuration
+├── pnpm-workspace.yaml
+└── package.json       # Root scripts
+```
+
+## Working on the documentation
+
+1. Start the dev server: `pnpm dev:docs`
+2. Edit files in `apps/docs/docs/` — changes appear immediately.
+3. Add new pages as `.mdx` files in the appropriate category folder.
+4. Update `apps/docs/sidebars.ts` if adding new sidebar entries.
+
+## Working on components
+
+1. Edit component source in `packages/ui/src/components/`.
+2. Run tests: `pnpm test`
+3. Build the package: `pnpm build:ui`
+4. Preview in docs: start the doc server and navigate to the component's page.
+
+## Adding a new component
+
+1. Create a directory under `packages/ui/src/components/YourComponent/`.
+2. Create the component file (`YourComponent.tsx`) and an `index.ts` barrel export.
+3. Export from `packages/ui/src/index.ts`.
+4. Add tests in `YourComponent.test.tsx`.
+5. Add documentation in `apps/docs/docs/components/your-component.mdx`.
+6. Update the sidebar in `apps/docs/sidebars.ts`.
+
+## Adding an interactive component example
+
+1. Create a playground component in `apps/docs/src/components/playgrounds/`.
+2. Import the real component from `@swapps/ui`.
+3. Use React state to allow prop configuration.
+4. Import the playground in the component's MDX documentation page.
+
+See the [AppHeader documentation](/docs/components/app-header) for a working example.

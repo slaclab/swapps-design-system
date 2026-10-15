@@ -1,0 +1,38 @@
+---
+sidebar_position: 1
+title: Design Principles
+---
+
+# Design principles
+
+These principles guide decisions across the SWAPPS Design System.
+
+## Consistency over novelty
+
+Applications should look and behave consistently. Shared patterns reduce cognitive load for users who work across multiple tools. When an established convention exists — in Carbon or in this system — prefer it over a custom approach.
+
+## Accessibility is foundational
+
+Accessibility is not a feature to be added later. Every component, pattern, and guideline should support:
+
+- Keyboard navigation
+- Screen reader compatibility
+- Sufficient color contrast
+- Visible focus indicators
+- Semantic HTML structure
+
+## Configuration over customization
+
+Organization-specific identity (logos, names, colors) should be configurable through props and theme tokens — not through forking or overriding shared components.
+
+## Build on Carbon
+
+IBM Carbon provides a tested, accessible, well-documented foundation. Use Carbon's components and conventions. Extend them for application-level patterns. Do not recreate what Carbon already provides.
+
+## Document what's real
+
+This documentation should describe what exists and works today. Features that are planned but not yet implemented should be clearly marked.
+
+## Progressive adoption
+
+Teams should be able to adopt the design system incrementally. Start with one component. Expand as needed. The system should not require an all-or-nothing migration.

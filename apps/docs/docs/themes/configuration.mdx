@@ -1,0 +1,68 @@
+---
+sidebar_position: 2
+title: Configuration
+---
+
+# Theme configuration
+
+## Current approach
+
+Today, theming is handled through two mechanisms:
+
+### 1. Carbon theme selection
+
+Choose a Carbon theme for your application's light or dark appearance:
+
+```tsx
+import { Theme } from '@carbon/react';
+
+function App() {
+  const [isDark, setIsDark] = useState(false);
+
+  return (
+    <Theme theme={isDark ? 'g100' : 'white'}>
+      <AppHeader appTitle="My App" orgName="SLAC" />
+      <Content>
+        {/* Application content */}
+      </Content>
+    </Theme>
+  );
+}
+```
+
+### 2. Component props
+
+Pass organization-specific values directly to components:
+
+```tsx
+<AppHeader
+  orgName="SLAC"
+  appTitle="Experiment Dashboard"
+  logo={<img src="/slac-logo.svg" alt="SLAC" height={20} />}
+  navItems={[
+    { label: 'Home', href: '/' },
+    { label: 'Data', href: '/data' },
+  ]}
+/>
+```
+
+## Available Carbon themes
+
+| Theme | Description |
+|---|---|
+| `white` | Light theme with white backgrounds |
+| `g10` | Light theme with subtle gray backgrounds |
+| `g90` | Dark theme with dark gray backgrounds |
+| `g100` | Dark theme with near-black backgrounds |
+
+## Future: theme presets
+
+:::info Planned
+A structured theme preset system is planned that will allow organizations to define a configuration object combining:
+
+- Organization name and logo
+- Preferred Carbon theme
+- Optional accent color tokens
+
+This will simplify setup for adopting teams. Design and API are not yet decided.
+:::

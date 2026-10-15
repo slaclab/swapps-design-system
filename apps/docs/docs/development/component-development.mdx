@@ -1,0 +1,90 @@
+---
+sidebar_position: 3
+title: Component Development
+---
+
+# Component development
+
+## Principles
+
+- Build on Carbon components rather than creating from scratch.
+- Use TypeScript for all component code.
+- Define clear prop interfaces.
+- Provide sensible defaults.
+- Support accessibility out of the box.
+- Do not hardcode organization-specific values.
+
+## File structure
+
+Each component lives in its own directory under `packages/ui/src/components/`:
+
+```
+packages/ui/src/components/AppHeader/
+├── AppHeader.tsx        # Component implementation
+├── AppHeader.test.tsx   # Tests
+└── index.ts             # Barrel export
+```
+
+## Writing a component
+
+```tsx
+import React from 'react';
+
+export interface MyComponentProps {
+  /** A required prop */
+  title: string;
+  /** An optional prop with a default */
+  variant?: 'default' | 'compact';
+}
+
+export function MyComponent({ title, variant = 'default' }: MyComponentProps) {
+  return (
+    <div className={`swapps-my-component swapps-my-component--${variant}`}>
+      <h2>{title}</h2>
+    </div>
+  );
+}
+```
+
+## Exporting
+
+Add the component to the package entry point:
+
+```ts
+// packages/ui/src/index.ts
+export { MyComponent } from './components/MyComponent';
+export type { MyComponentProps } from './components/MyComponent';
+```
+
+## Testing
+
+Use Vitest and React Testing Library:
+
+```tsx
+import { render, screen } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
+import { MyComponent } from './MyComponent';
+
+describe('MyComponent', () => {
+  it('renders the title', () => {
+    render(<MyComponent title="Hello" />);
+    expect(screen.getByText('Hello')).toBeInTheDocument();
+  });
+});
+```
+
+Run tests with:
+
+```bash
+pnpm test
+```
+
+## Build
+
+The package uses [tsup](https://tsup.egoist.dev/) to produce ESM, CJS, and TypeScript declarations:
+
+```bash
+pnpm build:ui
+```
+
+Output is written to `packages/ui/dist/`.

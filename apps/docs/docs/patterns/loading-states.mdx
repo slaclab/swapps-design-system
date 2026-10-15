@@ -1,0 +1,32 @@
+---
+sidebar_position: 3
+title: Loading States
+---
+
+# Loading states
+
+:::info Guidelines pending
+Specific loading state patterns are being defined. The guidance below covers general principles.
+:::
+
+## Principles
+
+- Always provide feedback when content is loading.
+- Use Carbon's loading components: `Loading` (spinner), `InlineLoading`, or skeleton components.
+- For long operations, show progress indicators where possible.
+- Avoid blank screens — use skeleton screens for layout-preserving loading.
+
+## Carbon loading components
+
+```tsx
+import { Loading, InlineLoading, DataTableSkeleton } from '@carbon/react';
+
+// Full-page loading
+<Loading description="Loading data" />
+
+// Inline loading (e.g., after a button click)
+<InlineLoading description="Saving..." />
+
+// Skeleton screen for a data table
+<DataTableSkeleton columnCount={4} rowCount={5} />
+```

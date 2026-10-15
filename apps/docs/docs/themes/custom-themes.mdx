@@ -1,0 +1,54 @@
+---
+sidebar_position: 3
+title: Custom Themes
+---
+
+# Custom lab themes
+
+## Concept
+
+Any organization should be able to use the SWAPPS Design System with their own branding. The system does not hardcode SLAC-specific styling into shared components.
+
+## What can be customized today
+
+| Element | How |
+|---|---|
+| Organization name | `orgName` prop on AppHeader |
+| Application title | `appTitle` prop on AppHeader |
+| Logo | `logo` prop on AppHeader |
+| Light/dark mode | Carbon `Theme` component |
+| Navigation items | `navItems` prop on AppHeader |
+
+## Example: Another laboratory
+
+```tsx
+import { AppHeader } from '@swapps/ui';
+import { Theme } from '@carbon/react';
+
+function BerkeleyLabApp() {
+  return (
+    <Theme theme="white">
+      <AppHeader
+        orgName="LBNL"
+        appTitle="Detector Monitor"
+        logo={<img src="/lbnl-logo.svg" alt="LBNL" height={20} />}
+        navItems={[
+          { label: 'Overview', href: '/' },
+          { label: 'Detectors', href: '/detectors' },
+        ]}
+      />
+      <main id="main-content">
+        {/* Application content */}
+      </main>
+    </Theme>
+  );
+}
+```
+
+## Future: accent colors and token overrides
+
+:::info Planned
+Support for organization-specific accent colors and CSS custom property overrides is planned. This will allow labs to bring their brand colors into the UI without modifying components.
+
+Sample colors used in documentation examples are illustrative only — they do not represent official colors of any organization.
+:::

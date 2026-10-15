@@ -1,0 +1,30 @@
+---
+sidebar_position: 5
+title: Error Handling
+---
+
+# Error handling
+
+:::info Guidelines pending
+Error handling patterns are being defined. The principles below provide initial guidance.
+:::
+
+## Principles
+
+- Show clear, human-readable error messages.
+- Explain what went wrong and what the user can do about it.
+- Use Carbon's `InlineNotification` or `ToastNotification` for error feedback.
+- For form validation, show errors inline next to the relevant field.
+- For page-level errors (e.g., failed data load), show an error state in the content area.
+
+## Example
+
+```tsx
+import { InlineNotification } from '@carbon/react';
+
+<InlineNotification
+  kind="error"
+  title="Unable to load experiments"
+  subtitle="The server did not respond. Please try again or contact support."
+/>
+```

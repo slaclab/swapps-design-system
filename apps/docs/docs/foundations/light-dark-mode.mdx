@@ -1,0 +1,58 @@
+---
+sidebar_position: 6
+title: Light & Dark Mode
+---
+
+# Light and dark mode
+
+## Approach
+
+The SWAPPS Design System supports both light and dark color schemes. These are independent of organization branding — any organization's theme should work in both modes.
+
+## Carbon themes
+
+Carbon provides four built-in themes:
+
+| Theme | Appearance | Use case |
+|---|---|---|
+| `white` | Light | Light backgrounds |
+| `g10` | Light (gray) | Subtle light backgrounds |
+| `g90` | Dark (gray) | Dark UI |
+| `g100` | Dark | High-contrast dark UI |
+
+Use Carbon's `Theme` component or Sass configuration to apply a theme:
+
+```tsx
+import { Theme } from '@carbon/react';
+
+function App() {
+  return (
+    <Theme theme="g100">
+      {/* Dark mode content */}
+    </Theme>
+  );
+}
+```
+
+## Light/dark mode vs. branding
+
+These are separate concepts:
+
+- **Light/dark mode** — The overall color scheme (background, text, surfaces).
+- **Organization branding** — Logos, accent colors, names.
+
+An application should support:
+
+- SLAC light
+- SLAC dark
+- Another lab's light
+- Another lab's dark
+
+The same component handles all four — through a combination of Carbon theme selection and organization props.
+
+## Guidance
+
+- Use Carbon color tokens so elements adapt automatically.
+- Test components in both light and dark modes.
+- Avoid hardcoding colors that don't respond to theme changes.
+- Consider the `prefers-color-scheme` media query for respecting system preferences.

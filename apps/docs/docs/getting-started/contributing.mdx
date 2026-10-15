@@ -1,0 +1,66 @@
+---
+sidebar_position: 5
+title: Contributing
+---
+
+# Contributing
+
+The SWAPPS Design System is maintained by the SWAPPS team at SLAC National Accelerator Laboratory. Contributions are welcome from SWAPPS members and from developers at other laboratories.
+
+## Ways to contribute
+
+- **Report issues** — File bugs, request features, or suggest improvements through the GitHub repository.
+- **Propose guidelines** — Suggest new design guidelines or patterns through a GitHub issue or discussion.
+- **Add documentation** — Improve or add documentation pages.
+- **Build components** — Create or improve React components in the UI package.
+- **Review changes** — Review pull requests for design, accessibility, and code quality.
+
+## Development setup
+
+See the [development setup guide](/docs/development/setup) for instructions on cloning the repository and running the project locally.
+
+## Proposing a new guideline
+
+1. Open a GitHub issue describing the guideline and the problem it addresses.
+2. Include examples of current inconsistency or the use case.
+3. The SWAPPS team will review and discuss.
+4. Approved guidelines are documented on this site.
+
+Guidelines that have not been formally reviewed should be labeled as **proposed** or **awaiting decision** in the documentation.
+
+## Adding or updating a component
+
+1. Open a GitHub issue describing the component and its intended API.
+2. Fork the repository and create a branch.
+3. Implement the component in `packages/ui/src/components/`.
+4. Add tests in the same directory.
+5. Add documentation in `apps/docs/docs/components/`.
+6. Submit a pull request.
+
+## Code standards
+
+- Use TypeScript for all component code.
+- Follow existing code patterns in the repository.
+- Write tests for component behavior.
+- Ensure accessibility — use Carbon's conventions and test with keyboard navigation.
+- Do not introduce new dependencies without discussion.
+
+## Review process
+
+Pull requests are reviewed by the SWAPPS team. Reviews consider:
+
+- Correctness and code quality
+- Accessibility
+- Alignment with design system principles
+- Documentation accuracy
+- Test coverage
+
+## Recording decisions
+
+:::info Policy decisions pending
+Some governance decisions — such as licensing, release cadence, and public contribution policies — have not yet been finalized. These will be documented as they are resolved.
+:::
+
+## Questions?
+
+Reach out to the SWAPPS team through the GitHub repository.

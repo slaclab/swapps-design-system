@@ -1,0 +1,62 @@
+---
+sidebar_position: 7
+title: Tables & Data Grids
+---
+
+# Tables and data grids
+
+Data tables are provided by IBM Carbon. Use Carbon's `DataTable` and related components.
+
+## Usage
+
+```tsx
+import {
+  DataTable,
+  Table,
+  TableHead,
+  TableRow,
+  TableHeader,
+  TableBody,
+  TableCell,
+} from '@carbon/react';
+
+const headers = [
+  { key: 'name', header: 'Name' },
+  { key: 'status', header: 'Status' },
+  { key: 'date', header: 'Date' },
+];
+
+const rows = [
+  { id: '1', name: 'Run 4523', status: 'Complete', date: '2024-12-01' },
+  { id: '2', name: 'Run 4524', status: 'Running', date: '2024-12-02' },
+];
+
+<DataTable rows={rows} headers={headers}>
+  {({ rows, headers, getTableProps, getHeaderProps, getRowProps }) => (
+    <Table {...getTableProps()}>
+      <TableHead>
+        <TableRow>
+          {headers.map((header) => (
+            <TableHeader {...getHeaderProps({ header })} key={header.key}>
+              {header.header}
+            </TableHeader>
+          ))}
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {rows.map((row) => (
+          <TableRow {...getRowProps({ row })} key={row.id}>
+            {row.cells.map((cell) => (
+              <TableCell key={cell.id}>{cell.value}</TableCell>
+            ))}
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  )}
+</DataTable>
+```
+
+## Reference
+
+See the [Carbon DataTable documentation](https://react.carbondesignsystem.com/?path=/story/components-datatable--default).

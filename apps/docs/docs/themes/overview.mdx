@@ -1,0 +1,60 @@
+---
+sidebar_position: 1
+title: Overview
+---
+
+# Themes
+
+## Concept
+
+The SWAPPS Design System separates three independent concerns:
+
+1. **Base design tokens** — Colors, typography, spacing provided by Carbon.
+2. **Light/dark appearance** — The overall color scheme, controlled by Carbon themes (`white`, `g10`, `g90`, `g100`).
+3. **Organization branding** — Logos, names, and accent colors specific to an organization.
+
+These are composed, not coupled. A SLAC-branded application and a Fermilab-branded application can both use the same components in both light and dark modes.
+
+## How it works today
+
+### Light and dark mode
+
+Use Carbon's `Theme` component to set the appearance:
+
+```tsx
+import { Theme } from '@carbon/react';
+
+<Theme theme="white">  {/* Light */}
+<Theme theme="g100">   {/* Dark */}
+```
+
+### Organization branding
+
+SWAPPS components accept organization-specific values through props:
+
+```tsx
+<AppHeader orgName="SLAC" appTitle="My App" />
+<AppHeader orgName="Fermilab" appTitle="Beam Monitor" />
+```
+
+No theme file or configuration object is needed for basic branding — it's just props.
+
+## Future direction
+
+:::info Extended theming — planned
+A more structured theme configuration system is planned for when the design system needs to support:
+
+- Organization-specific accent colors
+- Custom CSS token overrides
+- Theme presets (e.g., a "SLAC theme" package)
+- Per-application theme configuration files
+
+This will build on Carbon's token and theming system rather than replacing it.
+:::
+
+## Guidance
+
+- Use Carbon themes for light/dark mode.
+- Use component props for organization identity.
+- Do not assume specific colors are "official" for any organization.
+- Test components in both light and dark modes.

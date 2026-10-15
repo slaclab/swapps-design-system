@@ -1,0 +1,39 @@
+---
+sidebar_position: 2
+title: Colors
+---
+
+# Colors
+
+## Approach
+
+The SWAPPS Design System uses IBM Carbon's color system as its foundation. Carbon provides a comprehensive set of color tokens for backgrounds, text, interactive elements, status indicators, and more.
+
+## Carbon color tokens
+
+Rather than defining a separate color palette, use Carbon's [color tokens](https://carbondesignsystem.com/elements/color/tokens/) in your applications. These tokens adapt automatically to light and dark themes.
+
+Common token categories:
+
+| Category | Examples | Purpose |
+|---|---|---|
+| **Background** | `$background`, `$layer-01` | Page and container backgrounds |
+| **Text** | `$text-primary`, `$text-secondary` | Text content |
+| **Interactive** | `$interactive`, `$link-primary` | Buttons, links, active elements |
+| **Support** | `$support-error`, `$support-success` | Status and feedback |
+| **Border** | `$border-subtle`, `$border-strong` | Dividers and outlines |
+
+## Organization-specific accent colors
+
+Organizations may want to use their own accent or brand colors for specific elements like logos, banners, or highlights.
+
+:::info Branding tokens — planned
+A mechanism for configuring organization-specific accent colors through the theme system is planned but not yet implemented. See the [themes overview](/docs/themes/overview).
+:::
+
+## Guidance
+
+- **Do** use Carbon color tokens for all standard UI elements.
+- **Do** ensure sufficient color contrast (WCAG AA minimum).
+- **Do not** hardcode hex values in component code — use tokens.
+- **Do not** assume SLAC-specific colors are part of the shared system.
