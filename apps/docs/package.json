@@ -16,12 +16,14 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@carbon/react": "^1.118.0",
     "@docusaurus/core": "3.10.2",
     "@docusaurus/faster": "3.10.2",
     "@docusaurus/preset-classic": "3.10.2",
     "@mdx-js/react": "^3.0.0",
     "@swapps/ui": "workspace:*",
     "clsx": "^2.0.0",
+    "docusaurus-plugin-sass": "^0.2.7",
     "prism-react-renderer": "^2.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
