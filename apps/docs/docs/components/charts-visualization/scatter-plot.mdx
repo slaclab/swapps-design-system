@@ -1,0 +1,79 @@
+---
+title: Scatter Plot
+sidebar_position: 7
+---
+
+# Scatter Plot
+
+X-Y scatter chart with optional color dimension. Used for correlation plots, phase space displays, and measurement comparisons.
+
+Replaces **PyDMScatterPlot** and **ScatterPlotCurveItem**.
+
+## Usage
+
+```tsx
+import { SWAPPSChart, baseChartOption, chartAxisStyle, useChartTheme } from '@swapps/charts';
+
+function CorrelationPlot({ data }: { data: [number, number][] }) {
+  const theme = useChartTheme();
+
+  const option = {
+    ...baseChartOption(theme),
+    xAxis: { type: 'value', name: 'X Position (mm)', ...chartAxisStyle(theme) },
+    yAxis: { type: 'value', name: 'Y Position (mm)', ...chartAxisStyle(theme) },
+    series: [{
+      type: 'scatter',
+      data,
+      symbolSize: 4,
+    }],
+  };
+
+  return <SWAPPSChart option={option} style={{ height: 400 }} />;
+}
+```
+
+### Color-coded by a third dimension
+
+Use ECharts' `visualMap` to color points by a third value (e.g., intensity, time):
+
+```tsx
+const option = {
+  ...baseChartOption(theme),
+  xAxis: { type: 'value', name: 'X (mm)', ...chartAxisStyle(theme) },
+  yAxis: { type: 'value', name: 'Y (mm)', ...chartAxisStyle(theme) },
+  visualMap: {
+    min: 0,
+    max: 100,
+    dimension: 2,
+    inRange: { color: ['#002d9c', '#33b1ff', '#6fdc8c', '#f1c21b', '#fa4d56'] },
+    text: ['High', 'Low'],
+    textStyle: { color: theme.textSecondary },
+  },
+  series: [{
+    type: 'scatter',
+    data: points.map(p => [p.x, p.y, p.intensity]),
+    symbolSize: 5,
+  }],
+};
+```
+
+### Multiple series
+
+```tsx
+series: [
+  { type: 'scatter', name: 'Upstream', data: upstream, symbolSize: 4 },
+  { type: 'scatter', name: 'Downstream', data: downstream, symbolSize: 4 },
+],
+```
+
+## PyDM equivalent
+
+| PyDM | SWAPPS |
+|---|---|
+| `PyDMScatterPlot` | `SWAPPSChart` with `type: 'scatter'` series |
+| `ScatterPlotCurveItem` | An entry in the `series` array |
+
+## Related
+
+- [Time Series](/docs/components/charts-visualization/time-series) — Time-domain line charts
+- [Waveform](/docs/components/charts-visualization/waveform) — Array data display

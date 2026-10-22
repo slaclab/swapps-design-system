@@ -1,0 +1,121 @@
+---
+title: Time Series
+sidebar_position: 5
+---
+
+# Time Series
+
+Live scrolling time-series plots with multiple traces. The most common chart type in control system displays.
+
+Replaces **PyDMTimePlot** and **TimePlotCurveItem**.
+
+## Usage
+
+```tsx
+import { SWAPPSChart, baseChartOption, chartAxisStyle, useChartTheme } from '@swapps/charts';
+
+function BeamCurrentPlot({ data }: { data: [number, number][] }) {
+  const theme = useChartTheme();
+
+  const option = {
+    ...baseChartOption(theme),
+    xAxis: {
+      type: 'time',
+      name: 'Time',
+      ...chartAxisStyle(theme),
+    },
+    yAxis: {
+      type: 'value',
+      name: 'Current (mA)',
+      ...chartAxisStyle(theme),
+    },
+    series: [{
+      type: 'line',
+      name: 'Beam Current',
+      data,
+      showSymbol: false,
+      sampling: 'lttb',
+    }],
+  };
+
+  return <SWAPPSChart option={option} style={{ height: 400 }} />;
+}
+```
+
+### Multiple traces
+
+```tsx
+const option = {
+  ...baseChartOption(theme, { colors: CATEGORICAL_PALETTE[mode] }),
+  xAxis: { type: 'time', ...chartAxisStyle(theme) },
+  yAxis: { type: 'value', name: 'Temperature (°C)', ...chartAxisStyle(theme) },
+  series: [
+    { type: 'line', name: 'Sensor A', data: sensorA, showSymbol: false },
+    { type: 'line', name: 'Sensor B', data: sensorB, showSymbol: false },
+    { type: 'line', name: 'Sensor C', data: sensorC, showSymbol: false },
+  ],
+};
+```
+
+### Live scrolling window
+
+Accumulate data points and use `xAxis.min`/`xAxis.max` to create a fixed-width scrolling window:
+
+```tsx
+const WINDOW_MS = 60_000; // 1 minute window
+
+function useLiveTimeSeries(pvName: string) {
+  const [data, setData] = useState<[number, number][]>([]);
+
+  useEffect(() => {
+    // Subscribe to PV and accumulate points
+    const interval = setInterval(() => {
+      const now = Date.now();
+      setData(prev => {
+        const next = [...prev, [now, readPV(pvName)]];
+        // Trim points outside the window
+        const cutoff = now - WINDOW_MS;
+        return next.filter(([t]) => t >= cutoff);
+      });
+    }, 100);
+    return () => clearInterval(interval);
+  }, [pvName]);
+
+  return data;
+}
+```
+
+### With dataZoom (pan and zoom)
+
+```tsx
+const option = {
+  ...baseChartOption(theme),
+  xAxis: { type: 'time', ...chartAxisStyle(theme) },
+  yAxis: { type: 'value', ...chartAxisStyle(theme) },
+  dataZoom: [
+    { type: 'inside', xAxisIndex: 0 },
+    { type: 'slider', xAxisIndex: 0, bottom: 10 },
+  ],
+  series: [{ type: 'line', data, showSymbol: false }],
+};
+```
+
+## Performance notes
+
+- Use `sampling: 'lttb'` for datasets with thousands of points — ECharts downsamples while preserving visual shape.
+- Set `showSymbol: false` to skip rendering a dot at every data point.
+- Throttle option updates to ~150ms when receiving live data.
+- Use `emphasis: { disabled: true }` when hover highlighting is unnecessary.
+
+## PyDM equivalent
+
+| PyDM | SWAPPS |
+|---|---|
+| `PyDMTimePlot` | `SWAPPSChart` with `xAxis: { type: 'time' }` |
+| `TimePlotCurveItem` | An entry in the `series` array with `type: 'line'` |
+
+## Related
+
+- [Waveform](/docs/components/charts-visualization/waveform) — Array data as line charts
+- [Archiver Plot](/docs/components/charts-visualization/archiver-plot) — Historical time-series data
+- [SWAPPSChart](/docs/components/charts-visualization/swapps-chart) — Component reference

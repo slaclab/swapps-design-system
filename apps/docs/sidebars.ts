@@ -54,6 +54,23 @@ const sidebars: SidebarsConfig = {
             "components/scientific-controls/template-repeater",
           ],
         },
+        {
+          type: "category",
+          label: "Charts & Visualization",
+          link: { type: "doc", id: "components/charts-visualization/index" },
+          items: [
+            "components/charts-visualization/swapps-chart",
+            "components/charts-visualization/theme-and-styling",
+            "components/charts-visualization/palettes",
+            "components/charts-visualization/utilities",
+            "components/charts-visualization/time-series",
+            "components/charts-visualization/waveform",
+            "components/charts-visualization/scatter-plot",
+            "components/charts-visualization/event-plot",
+            "components/charts-visualization/archiver-plot",
+            "components/charts-visualization/formula-curves",
+          ],
+        },
       ],
     },
     {

@@ -1,0 +1,87 @@
+---
+title: Palettes
+sidebar_position: 3
+---
+
+# Palettes
+
+14-color categorical palettes for light and dark themes, derived from Carbon's data visualization color guidelines.
+
+## CATEGORICAL_PALETTE
+
+Two 14-color arrays — one for light backgrounds, one for dark — optimized for distinguishability and accessibility.
+
+```tsx
+import { CATEGORICAL_PALETTE, baseChartOption, useChartTheme } from '@swapps/charts';
+
+function MultiSeriesChart() {
+  const theme = useChartTheme();
+  const mode = theme === CHART_THEMES.dark ? 'dark' : 'light';
+
+  const option = {
+    ...baseChartOption(theme, { colors: CATEGORICAL_PALETTE[mode] }),
+    series: traces.map((t) => ({ type: 'line', name: t.name, data: t.data })),
+  };
+
+  return <SWAPPSChart option={option} />;
+}
+```
+
+## seriesColor
+
+Cycling color picker for the i-th series. Wraps around the 14-color palette.
+
+```tsx
+import { seriesColor } from '@swapps/charts';
+
+const color0 = seriesColor(0, 'light');  // '#6929c4' (Purple 70)
+const color1 = seriesColor(1, 'light');  // '#1192e8' (Cyan 50)
+const color14 = seriesColor(14, 'light'); // wraps to '#6929c4'
+```
+
+Useful when you need to reference a series color outside of ECharts (e.g., in a custom legend or a status label).
+
+## Color values
+
+### Light palette
+
+| Index | Hex | Carbon Token |
+|---|---|---|
+| 0 | `#6929c4` | Purple 70 |
+| 1 | `#1192e8` | Cyan 50 |
+| 2 | `#005d5d` | Teal 70 |
+| 3 | `#9f1853` | Magenta 70 |
+| 4 | `#fa4d56` | Red 50 |
+| 5 | `#570408` | Red 90 |
+| 6 | `#198038` | Green 60 |
+| 7 | `#002d9c` | Blue 80 |
+| 8 | `#ee538b` | Magenta 50 |
+| 9 | `#b28600` | Yellow 50 |
+| 10 | `#009d9a` | Teal 50 |
+| 11 | `#012749` | Cyan 90 |
+| 12 | `#8a3800` | Orange 70 |
+| 13 | `#a56eff` | Purple 50 |
+
+### Dark palette
+
+| Index | Hex | Carbon Token |
+|---|---|---|
+| 0 | `#8a3ffc` | Purple 60 |
+| 1 | `#33b1ff` | Cyan 40 |
+| 2 | `#007d79` | Teal 60 |
+| 3 | `#ff7eb6` | Magenta 40 |
+| 4 | `#fa4d56` | Red 50 |
+| 5 | `#fff1f1` | Red 10 |
+| 6 | `#6fdc8c` | Green 30 |
+| 7 | `#4589ff` | Blue 50 |
+| 8 | `#d12771` | Magenta 60 |
+| 9 | `#d2a106` | Yellow 40 |
+| 10 | `#08bdba` | Teal 40 |
+| 11 | `#bae6ff` | Cyan 20 |
+| 12 | `#ba4e00` | Orange 60 |
+| 13 | `#be95ff` | Purple 40 |
+
+## Related
+
+- [Theme & Styling](/docs/components/charts-visualization/theme-and-styling) — Full chart theming
+- [SWAPPSChart](/docs/components/charts-visualization/swapps-chart) — The chart component

@@ -1,0 +1,130 @@
+---
+title: Charts & Visualization
+sidebar_label: Charts & Visualization
+sidebar_position: 1
+---
+
+import Link from '@docusaurus/Link';
+
+# Charts & Visualization
+
+Charting utilities from `@swapps/charts` for scientific data visualization. Built on [Apache ECharts](https://echarts.apache.org/) with Carbon-themed styling, following the same architecture as SLAC's [Canopy SDK](https://github.com/slaclab/canopy-sdk-js).
+
+## Architecture
+
+The package provides a **single chart component** (`SWAPPSChart`) and **theming utilities** — not individual chart-type components. You build any chart type (time series, scatter, waveform, event plot) by constructing an ECharts `option` object and passing it to `SWAPPSChart`. This gives you full access to ECharts' capabilities without an abstraction layer in between.
+
+```tsx
+import { SWAPPSChart, baseChartOption, useChartTheme } from '@swapps/charts';
+
+const theme = useChartTheme();
+const option = {
+  ...baseChartOption(theme),
+  xAxis: { type: 'time' },
+  series: [{ type: 'line', data: myData }],
+};
+
+<SWAPPSChart option={option} />
+```
+
+## Core component
+
+<div className="swapps-component-cards">
+
+<Link to="/docs/components/charts-visualization/swapps-chart" className="swapps-component-card">
+  <div className="swapps-component-card__body">
+    <span className="swapps-component-card__badge swapps-component-card__badge--available">Available</span>
+    <h3>SWAPPSChart</h3>
+    <p>Thin ECharts wrapper with Carbon theming, chart grouping, and safe lifecycle management.</p>
+  </div>
+</Link>
+
+</div>
+
+## Theming & configuration
+
+<div className="swapps-component-cards">
+
+<Link to="/docs/components/charts-visualization/theme-and-styling" className="swapps-component-card">
+  <div className="swapps-component-card__body">
+    <span className="swapps-component-card__badge swapps-component-card__badge--available">Available</span>
+    <h3>Theme & Styling</h3>
+    <p>ChartTheme, baseChartOption, chartAxisStyle — Carbon-themed chart configuration.</p>
+  </div>
+</Link>
+
+<Link to="/docs/components/charts-visualization/palettes" className="swapps-component-card">
+  <div className="swapps-component-card__body">
+    <span className="swapps-component-card__badge swapps-component-card__badge--available">Available</span>
+    <h3>Palettes</h3>
+    <p>14-color categorical palettes for light and dark themes, with a cycling color picker.</p>
+  </div>
+</Link>
+
+<Link to="/docs/components/charts-visualization/utilities" className="swapps-component-card">
+  <div className="swapps-component-card__body">
+    <span className="swapps-component-card__badge swapps-component-card__badge--available">Available</span>
+    <h3>Utilities</h3>
+    <p>Axis tick formatting, value formatting, and PNG chart capture.</p>
+  </div>
+</Link>
+
+</div>
+
+## Chart patterns
+
+Usage guides showing how to build each PyDM-equivalent chart type with `SWAPPSChart`.
+
+<div className="swapps-component-cards">
+
+<Link to="/docs/components/charts-visualization/time-series" className="swapps-component-card">
+  <div className="swapps-component-card__body">
+    <h3>Time Series</h3>
+    <p>Live scrolling time-series plots with multiple traces. Replaces PyDMTimePlot.</p>
+  </div>
+</Link>
+
+<Link to="/docs/components/charts-visualization/waveform" className="swapps-component-card">
+  <div className="swapps-component-card__body">
+    <h3>Waveform</h3>
+    <p>Array PV data rendered as line charts. Replaces PyDMWaveformPlot.</p>
+  </div>
+</Link>
+
+<Link to="/docs/components/charts-visualization/scatter-plot" className="swapps-component-card">
+  <div className="swapps-component-card__body">
+    <h3>Scatter Plot</h3>
+    <p>X-Y scatter with optional color dimension. Replaces PyDMScatterPlot.</p>
+  </div>
+</Link>
+
+<Link to="/docs/components/charts-visualization/event-plot" className="swapps-component-card">
+  <div className="swapps-component-card__body">
+    <h3>Event Plot</h3>
+    <p>Discrete event markers on a timeline. Replaces PyDMEventPlot.</p>
+  </div>
+</Link>
+
+<Link to="/docs/components/charts-visualization/archiver-plot" className="swapps-component-card">
+  <div className="swapps-component-card__body">
+    <h3>Archiver Plot</h3>
+    <p>Historical data from EPICS Archiver Appliance. Replaces PyDMArchiverTimePlot.</p>
+  </div>
+</Link>
+
+<Link to="/docs/components/charts-visualization/formula-curves" className="swapps-component-card">
+  <div className="swapps-component-card__body">
+    <h3>Formula Curves</h3>
+    <p>Computed traces from expressions over other data series. Replaces FormulaCurveItem.</p>
+  </div>
+</Link>
+
+</div>
+
+## Key design decisions
+
+- **Option-based theming** — Carbon token values are resolved into a `ChartTheme` object and applied through the ECharts option, not ECharts' theme registration system. This avoids re-creating chart instances on theme change.
+- **`animation: false` by default** — Live PV data updates frequently; animation causes jitter.
+- **Canvas renderer** — Default renderer for performance with large datasets.
+- **Consumer manages data** — The chart package does not subscribe to PVs or buffer data. Use `usePV()` from your data layer, accumulate arrays, throttle updates to ~150ms, and pass fresh option objects.
+- **`echarts.connect()` support** — Link multiple charts via the `group` prop so they share tooltip crosshairs and dataZoom actions.

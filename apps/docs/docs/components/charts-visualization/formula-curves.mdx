@@ -1,0 +1,112 @@
+---
+title: Formula Curves
+sidebar_position: 10
+---
+
+# Formula Curves
+
+Computed traces derived from mathematical expressions over other data series. Used for displaying differences, ratios, running averages, or any derived quantity alongside raw PV data.
+
+Replaces **FormulaCurveItem**.
+
+## Usage
+
+Compute derived data in your application logic and add it as another series:
+
+```tsx
+import { SWAPPSChart, baseChartOption, chartAxisStyle, useChartTheme } from '@swapps/charts';
+
+function DifferenceChart({
+  sensorA,
+  sensorB,
+}: {
+  sensorA: [number, number][];
+  sensorB: [number, number][];
+}) {
+  const theme = useChartTheme();
+
+  // Compute A - B at each timestamp
+  const difference = sensorA.map(([t, a], i) => {
+    const b = sensorB[i]?.[1] ?? 0;
+    return [t, a - b];
+  });
+
+  const option = {
+    ...baseChartOption(theme),
+    xAxis: { type: 'time', ...chartAxisStyle(theme) },
+    yAxis: { type: 'value', name: 'Temperature (°C)', ...chartAxisStyle(theme) },
+    series: [
+      { type: 'line', name: 'Sensor A', data: sensorA, showSymbol: false },
+      { type: 'line', name: 'Sensor B', data: sensorB, showSymbol: false },
+      {
+        type: 'line',
+        name: 'A − B',
+        data: difference,
+        showSymbol: false,
+        lineStyle: { type: 'dashed' },
+      },
+    ],
+  };
+
+  return <SWAPPSChart option={option} style={{ height: 400 }} />;
+}
+```
+
+### Common formula patterns
+
+```tsx
+// Running average (last N points)
+function runningAverage(data: [number, number][], window: number) {
+  return data.map(([t], i) => {
+    const slice = data.slice(Math.max(0, i - window + 1), i + 1);
+    const avg = slice.reduce((sum, [, v]) => sum + v, 0) / slice.length;
+    return [t, avg];
+  });
+}
+
+// Ratio of two series
+function ratio(a: [number, number][], b: [number, number][]) {
+  return a.map(([t, va], i) => {
+    const vb = b[i]?.[1] ?? 1;
+    return [t, vb !== 0 ? va / vb : 0];
+  });
+}
+
+// Derivative (rate of change)
+function derivative(data: [number, number][]) {
+  return data.slice(1).map(([t, v], i) => {
+    const dt = (t - data[i][0]) / 1000; // seconds
+    const dv = v - data[i][1];
+    return [t, dt > 0 ? dv / dt : 0];
+  });
+}
+```
+
+### With Canopy Fox formulas
+
+If using the Canopy SDK's Fox formula service, formulas are evaluated server-side. Pass the results directly as series data:
+
+```tsx
+// Fox formula returns computed values
+const foxResult = useFoxFormula('A + B * 2', { A: pvNameA, B: pvNameB });
+
+series: [
+  { type: 'line', name: 'Raw A', data: rawA },
+  { type: 'line', name: 'Raw B', data: rawB },
+  { type: 'line', name: 'A + 2B (computed)', data: foxResult.data },
+],
+```
+
+## PyDM equivalent
+
+| PyDM | SWAPPS |
+|---|---|
+| `FormulaCurveItem` | Computed data array added as a `series` entry |
+
+In PyDM, `FormulaCurveItem` evaluates an expression string at the widget level. In SWAPPS, formula evaluation happens in your application or data layer, and the result is passed as data to the chart.
+
+## Related
+
+- [Time Series](/docs/components/charts-visualization/time-series) — Live time-series plots
+- [Archiver Plot](/docs/components/charts-visualization/archiver-plot) — Historical data
+- [Utilities](/docs/components/charts-visualization/utilities) — Value formatting

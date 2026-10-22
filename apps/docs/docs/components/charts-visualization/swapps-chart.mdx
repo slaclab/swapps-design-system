@@ -1,0 +1,112 @@
+---
+title: SWAPPSChart
+sidebar_position: 1
+---
+
+# SWAPPSChart
+
+A thin React wrapper around [Apache ECharts](https://echarts.apache.org/) that provides Carbon-themed chart rendering, `echarts.connect()` group management, stable event bindings, and safe unmount handling.
+
+This is the single chart component in `@swapps/charts`. All chart types (time series, scatter, waveform, event plots) are built by passing different `EChartsOption` objects to this component.
+
+Mirrors the architecture of [`CanopyChart`](https://github.com/slaclab/canopy-sdk-js) from SLAC's Canopy SDK.
+
+## Usage
+
+```tsx
+import { SWAPPSChart, baseChartOption, useChartTheme, chartAxisStyle } from '@swapps/charts';
+import { CATEGORICAL_PALETTE } from '@swapps/charts';
+
+function BeamCurrentChart({ data }: { data: [number, number][] }) {
+  const theme = useChartTheme();
+
+  const option = {
+    ...baseChartOption(theme),
+    xAxis: { type: 'time', name: 'Time', ...chartAxisStyle(theme) },
+    yAxis: { type: 'value', name: 'Current (mA)', ...chartAxisStyle(theme) },
+    series: [{
+      type: 'line',
+      data,
+      showSymbol: false,
+      sampling: 'lttb',
+    }],
+  };
+
+  return <SWAPPSChart option={option} style={{ height: 400 }} />;
+}
+```
+
+### Linked charts
+
+Use the `group` prop to synchronize tooltip crosshairs and dataZoom across multiple charts:
+
+```tsx
+<SWAPPSChart option={temperatureOption} group="monitor" style={{ height: 300 }} />
+<SWAPPSChart option={pressureOption} group="monitor" style={{ height: 300 }} />
+```
+
+### Accessing the ECharts instance
+
+```tsx
+function ChartWithExport() {
+  const handleReady = (chart: ECharts) => {
+    // Access the raw ECharts instance for advanced operations
+    console.log('Chart ready:', chart.getWidth(), chart.getHeight());
+  };
+
+  return <SWAPPSChart option={option} onReady={handleReady} />;
+}
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `option` | `EChartsOption` | **(required)** | The full ECharts configuration object. |
+| `replaceMerge` | `string \| string[]` | — | Component types to replace (not merge) on update. |
+| `notMerge` | `boolean` | `false` | Replace the entire option on each update. |
+| `lazyUpdate` | `boolean` | `false` | Defer rendering to the next animation frame. |
+| `group` | `string` | — | `echarts.connect()` group name for linking charts. |
+| `onEvents` | `Record<string, ChartEventHandler>` | — | Event handlers keyed by ECharts event name. |
+| `onReady` | `(chart: ECharts) => void` | — | Called when the chart instance is created. |
+| `opts` | `SWAPPSChartInitOptions` | — | Init options for renderer, DPR, and locale. |
+| `style` | `CSSProperties` | `{ width: '100%', height: '100%' }` | Wrapper style. Set `height` explicitly — ECharts requires a known height. |
+| `className` | `string` | — | Additional CSS class on the wrapper div. |
+| `ariaLabel` | `string` | — | When set, the wrapper becomes `role="img"` with this label. |
+| `ref` | `Ref<HTMLDivElement>` | — | Ref to the wrapper div for attaching DOM listeners. |
+
+### SWAPPSChartInitOptions
+
+```ts
+interface SWAPPSChartInitOptions {
+  renderer?: 'canvas' | 'svg';  // Default: 'canvas'
+  devicePixelRatio?: number;
+  locale?: string;
+}
+```
+
+## Performance tips
+
+- Set `animation: false` (the default from `baseChartOption`) for live-updating charts.
+- Use `sampling: 'lttb'` and `showSymbol: false` on line series with large datasets.
+- Throttle option updates to ~150ms. Connected charts rebroadcast actions, so every update costs more than a single render.
+- Use `lazyUpdate` when updating multiple charts in rapid succession.
+- Use `replaceMerge` when dynamically adding/removing series to avoid stale ghost traces.
+
+## Installation
+
+```bash
+pnpm add @swapps/charts
+```
+
+Peer dependencies:
+
+```bash
+pnpm add echarts echarts-for-react
+```
+
+## Related
+
+- [Theme & Styling](/docs/components/charts-visualization/theme-and-styling) — Build themed chart options
+- [Palettes](/docs/components/charts-visualization/palettes) — Series color management
+- [Time Series](/docs/components/charts-visualization/time-series) — Live time-series usage pattern

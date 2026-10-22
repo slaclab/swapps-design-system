@@ -1,0 +1,84 @@
+---
+title: Waveform
+sidebar_position: 6
+---
+
+# Waveform
+
+Renders array-type PV data as line charts. Used for beam profile displays, spectra, and any PV that produces a 1D array of values.
+
+Replaces **PyDMWaveformPlot** and **WaveformCurveItem**.
+
+## Usage
+
+```tsx
+import { SWAPPSChart, baseChartOption, chartAxisStyle, useChartTheme } from '@swapps/charts';
+
+function WaveformDisplay({ waveform }: { waveform: number[] }) {
+  const theme = useChartTheme();
+
+  const option = {
+    ...baseChartOption(theme),
+    xAxis: {
+      type: 'value',
+      name: 'Sample Index',
+      ...chartAxisStyle(theme),
+    },
+    yAxis: {
+      type: 'value',
+      name: 'Amplitude',
+      ...chartAxisStyle(theme),
+    },
+    series: [{
+      type: 'line',
+      data: waveform.map((v, i) => [i, v]),
+      showSymbol: false,
+      sampling: 'lttb',
+    }],
+  };
+
+  return <SWAPPSChart option={option} style={{ height: 300 }} />;
+}
+```
+
+### With physical X axis
+
+When the X axis represents a physical quantity (wavelength, position, energy), pass paired `[x, y]` data:
+
+```tsx
+const data = wavelengths.map((w, i) => [w, intensities[i]]);
+
+const option = {
+  ...baseChartOption(theme),
+  xAxis: { type: 'value', name: 'Wavelength (nm)', ...chartAxisStyle(theme) },
+  yAxis: { type: 'value', name: 'Intensity (a.u.)', ...chartAxisStyle(theme) },
+  series: [{ type: 'line', data, showSymbol: false }],
+};
+```
+
+### Multiple waveforms overlaid
+
+```tsx
+series: [
+  { type: 'line', name: 'Channel A', data: chA.map((v, i) => [i, v]), showSymbol: false },
+  { type: 'line', name: 'Channel B', data: chB.map((v, i) => [i, v]), showSymbol: false },
+],
+```
+
+## Performance notes
+
+- Waveform PVs can produce thousands of points per update at 10+ Hz.
+- Use `sampling: 'lttb'` and `showSymbol: false` for arrays over 1000 elements.
+- Throttle option updates — don't rebuild the option on every PV callback.
+
+## PyDM equivalent
+
+| PyDM | SWAPPS |
+|---|---|
+| `PyDMWaveformPlot` | `SWAPPSChart` with `xAxis: { type: 'value' }` + line series |
+| `WaveformCurveItem` | An entry in the `series` array |
+
+## Related
+
+- [Time Series](/docs/components/charts-visualization/time-series) — Time-domain plots
+- [Scatter Plot](/docs/components/charts-visualization/scatter-plot) — X-Y scatter

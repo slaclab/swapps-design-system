@@ -1,0 +1,88 @@
+---
+title: Utilities
+sidebar_position: 4
+---
+
+# Utilities
+
+Formatting and export utilities for chart data.
+
+## formatAxisTick
+
+Formats a numeric value for axis tick labels. Uses exponential notation for very large or very small values.
+
+```tsx
+import { formatAxisTick } from '@swapps/charts';
+
+formatAxisTick(0);         // "0"
+formatAxisTick(1500);      // "1500"
+formatAxisTick(3.14159);   // "3.1"
+formatAxisTick(0.00042);   // "4.2e-1" (exponential at extremes)
+formatAxisTick(2.5e8);     // "2.5e+8"
+```
+
+Use it in an axis configuration:
+
+```tsx
+xAxis: {
+  type: 'value',
+  axisLabel: { formatter: formatAxisTick },
+  ...chartAxisStyle(theme),
+}
+```
+
+## formatValue
+
+Formats a value for tooltips and data tables with significant digits.
+
+```tsx
+import { formatValue } from '@swapps/charts';
+
+formatValue(13.60234);       // "13.60" (4 significant digits)
+formatValue(13.60234, 6);    // "13.6023"
+formatValue(0.00001234, 3);  // "0.0000123"
+```
+
+## captureChartPng
+
+Exports a mounted chart as a PNG data URL.
+
+```tsx
+import { captureChartPng, dataUrlToBlob } from '@swapps/charts';
+
+function ChartWithExport() {
+  const handleReady = (chart) => {
+    const dataUrl = captureChartPng(chart, {
+      pixelRatio: 2,
+      backgroundColor: '#ffffff',
+    });
+    // Use the data URL directly as an image src,
+    // or convert to a Blob for upload
+    const blob = dataUrlToBlob(dataUrl);
+  };
+
+  return <SWAPPSChart option={option} onReady={handleReady} />;
+}
+```
+
+### captureChartPng options
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `pixelRatio` | `number` | `2` | Resolution multiplier for the exported image. |
+| `backgroundColor` | `string` | `'#ffffff'` | Background fill for the exported PNG. |
+
+## dataUrlToBlob
+
+Converts a data URL string to a `Blob` without using `fetch()`.
+
+```tsx
+const blob = dataUrlToBlob(dataUrl);
+// Upload, save, or create an object URL
+const objectUrl = URL.createObjectURL(blob);
+```
+
+## Related
+
+- [SWAPPSChart](/docs/components/charts-visualization/swapps-chart) — The chart component
+- [Theme & Styling](/docs/components/charts-visualization/theme-and-styling) — Themed chart configuration

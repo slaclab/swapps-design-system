@@ -1,0 +1,84 @@
+---
+title: Event Plot
+sidebar_position: 8
+---
+
+# Event Plot
+
+Discrete event markers on a timeline. Used for machine state transitions, beam trips, interlock events, and other timestamped occurrences that don't have continuous data between them.
+
+Replaces **PyDMEventPlot**.
+
+## Usage
+
+```tsx
+import { SWAPPSChart, baseChartOption, chartAxisStyle, useChartTheme } from '@swapps/charts';
+
+function BeamTripTimeline({ events }: { events: { time: number; label: string }[] }) {
+  const theme = useChartTheme();
+
+  const option = {
+    ...baseChartOption(theme),
+    xAxis: { type: 'time', name: 'Time', ...chartAxisStyle(theme) },
+    yAxis: { show: false },
+    series: [{
+      type: 'scatter',
+      data: events.map(e => [e.time, 0]),
+      symbolSize: 10,
+      symbol: 'diamond',
+      label: {
+        show: true,
+        formatter: (params) => events[params.dataIndex]?.label ?? '',
+        position: 'top',
+        color: theme.textSecondary,
+        fontSize: 11,
+      },
+    }],
+  };
+
+  return <SWAPPSChart option={option} style={{ height: 200 }} />;
+}
+```
+
+### With vertical event lines
+
+Use `markLine` for events that should span the full chart height:
+
+```tsx
+series: [{
+  type: 'line',
+  data: timeSeriesData,
+  markLine: {
+    data: events.map(e => ({
+      xAxis: e.time,
+      label: { formatter: e.label, color: theme.textSecondary },
+      lineStyle: { color: theme.warning, type: 'dashed' },
+    })),
+    silent: true,
+  },
+}],
+```
+
+### Categorized events
+
+Use different symbols or colors per event category:
+
+```tsx
+const categorySeries = Object.entries(groupedEvents).map(([category, events]) => ({
+  type: 'scatter',
+  name: category,
+  data: events.map(e => [e.time, 0]),
+  symbolSize: 8,
+}));
+```
+
+## PyDM equivalent
+
+| PyDM | SWAPPS |
+|---|---|
+| `PyDMEventPlot` | `SWAPPSChart` with `type: 'scatter'` + optional `markLine` |
+
+## Related
+
+- [Time Series](/docs/components/charts-visualization/time-series) — Continuous time data
+- [Archiver Plot](/docs/components/charts-visualization/archiver-plot) — Historical data with events

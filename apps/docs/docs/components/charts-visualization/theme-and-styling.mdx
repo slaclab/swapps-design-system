@@ -1,0 +1,118 @@
+---
+title: Theme & Styling
+sidebar_position: 2
+---
+
+# Theme & Styling
+
+Chart theming utilities that map Carbon design tokens to ECharts configuration. All chart colors are resolved from Carbon's token system and applied through the ECharts option object, not through ECharts' theme registration.
+
+## useChartTheme
+
+React hook that returns the `ChartTheme` matching the current SWAPPS appearance (light or dark).
+
+```tsx
+import { useChartTheme, baseChartOption } from '@swapps/charts';
+
+function MyChart() {
+  const theme = useChartTheme();
+  const option = { ...baseChartOption(theme), /* your series */ };
+  return <SWAPPSChart option={option} />;
+}
+```
+
+## baseChartOption
+
+Factory function that produces a themed starting `EChartsOption`. Use spread syntax to combine it with your chart-specific configuration.
+
+```tsx
+import { baseChartOption, CATEGORICAL_PALETTE } from '@swapps/charts';
+
+const option = {
+  ...baseChartOption(theme, { colors: CATEGORICAL_PALETTE.light }),
+  xAxis: { type: 'time', name: 'Time', ...chartAxisStyle(theme) },
+  yAxis: { type: 'value', name: 'Temperature (°C)', ...chartAxisStyle(theme) },
+  series: [
+    { type: 'line', name: 'Sensor A', data: sensorA },
+    { type: 'line', name: 'Sensor B', data: sensorB },
+  ],
+};
+```
+
+The base option includes:
+
+| Setting | Value | Why |
+|---|---|---|
+| `animation` | `false` | Live data updates jitter with animation |
+| `backgroundColor` | From theme | Matches Carbon surface |
+| `fontFamily` | IBM Plex Sans | Matches Carbon typography |
+| `grid` | `{ top: 40, bottom: 60, left: 70, right: 20 }` | Room for axis labels and legend |
+| `tooltip` | Dashed crosshair, themed colors | Consistent tooltip styling |
+| `legend` | Themed text color | Readable in both themes |
+
+## chartAxisStyle
+
+Returns a style fragment to spread into each axis definition.
+
+```tsx
+import { chartAxisStyle } from '@swapps/charts';
+
+const option = {
+  ...baseChartOption(theme),
+  xAxis: { type: 'value', name: 'Position (mm)', ...chartAxisStyle(theme) },
+  yAxis: { type: 'value', name: 'Intensity', ...chartAxisStyle(theme) },
+};
+```
+
+Includes themed settings for `axisLabel`, `axisLine`, `axisTick`, `splitLine`, and `nameTextStyle`.
+
+## ChartTheme
+
+The data structure holding resolved Carbon token values.
+
+```ts
+interface ChartTheme {
+  background: string;       // Surface color
+  textPrimary: string;      // Main text
+  textSecondary: string;    // Axis labels, secondary text
+  axisLine: string;         // Axis line color
+  axisTick: string;         // Tick mark color
+  gridLine: string;         // Grid line color
+  tooltipBg: string;        // Tooltip background
+  tooltipText: string;      // Tooltip text
+  tooltipBorder: string;    // Tooltip border
+  crosshair: string;        // Crosshair/axis pointer color
+  legendText: string;       // Legend text
+  danger: string;           // Alarm/error (maps to Carbon support-error)
+  success: string;          // Good state (maps to Carbon support-success)
+  warning: string;          // Warning (maps to Carbon support-warning)
+  selection: string;        // Interactive selection
+  highlight: string;        // Shaded highlight bands
+}
+```
+
+## CHART_THEMES
+
+Pre-built light and dark theme objects.
+
+```tsx
+import { CHART_THEMES } from '@swapps/charts';
+
+const lightTheme = CHART_THEMES.light;
+const darkTheme = CHART_THEMES.dark;
+```
+
+## Why not ECharts theme registration?
+
+ECharts supports registering named themes via `echarts.registerTheme()`. Canopy and SWAPPS avoid this because changing a registered theme re-creates the chart instance, which:
+
+- Drops the chart from its `echarts.connect()` group
+- Loses any internal state (zoom level, selected legend items)
+- Causes a visible flash during theme transitions
+
+By applying theme values through the option object, theme changes are handled as a regular option update — smooth and state-preserving.
+
+## Related
+
+- [SWAPPSChart](/docs/components/charts-visualization/swapps-chart) — The chart component
+- [Palettes](/docs/components/charts-visualization/palettes) — Series color management

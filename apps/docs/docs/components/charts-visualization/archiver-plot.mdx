@@ -1,0 +1,104 @@
+---
+title: Archiver Plot
+sidebar_position: 9
+---
+
+# Archiver Plot
+
+Historical data visualization from the EPICS Archiver Appliance. Displays archived PV data with time-range navigation, chunked loading, and server-side binning for large time spans.
+
+Replaces **PyDMArchiverTimePlot** and **ArchivePlotCurveItem**.
+
+## Usage
+
+```tsx
+import { SWAPPSChart, baseChartOption, chartAxisStyle, useChartTheme } from '@swapps/charts';
+
+function ArchiverDisplay({ data }: { data: [number, number][] }) {
+  const theme = useChartTheme();
+
+  const option = {
+    ...baseChartOption(theme),
+    xAxis: { type: 'time', name: 'Time', ...chartAxisStyle(theme) },
+    yAxis: { type: 'value', name: 'Value', ...chartAxisStyle(theme) },
+    dataZoom: [
+      { type: 'inside', xAxisIndex: 0 },
+      { type: 'slider', xAxisIndex: 0, bottom: 10 },
+    ],
+    series: [{
+      type: 'line',
+      data,
+      showSymbol: false,
+      sampling: 'lttb',
+    }],
+  };
+
+  return <SWAPPSChart option={option} style={{ height: 400 }} />;
+}
+```
+
+### Fetching archiver data
+
+The chart package does not include an archiver client. Use your application's data layer or the Canopy Mole client to fetch historical data, then pass it as `[timestamp, value]` pairs:
+
+```tsx
+async function fetchArchiverData(pv: string, start: Date, end: Date) {
+  const response = await fetch(
+    `/archiver/data/getData.json?pv=${pv}&from=${start.toISOString()}&to=${end.toISOString()}`
+  );
+  const json = await response.json();
+  return json[0].data.map((d) => [d.secs * 1000 + d.nanos / 1e6, d.val]);
+}
+```
+
+### Binned data with error bands
+
+For large time ranges, the archiver returns binned data (mean, min, max). Show the range as an area:
+
+```tsx
+series: [
+  {
+    type: 'line',
+    name: 'Mean',
+    data: bins.map(b => [b.time, b.mean]),
+    showSymbol: false,
+  },
+  {
+    type: 'line',
+    name: 'Range',
+    data: bins.map(b => [b.time, b.min, b.max]),
+    areaStyle: { opacity: 0.15 },
+    lineStyle: { width: 0 },
+    showSymbol: false,
+    encode: { x: 0, y: [1, 2] },
+  },
+],
+```
+
+### On-demand reload on zoom
+
+Listen to `dataZoom` events to reload data at the new time range:
+
+```tsx
+<SWAPPSChart
+  option={option}
+  onEvents={{
+    dataZoom: (params) => {
+      const { start, end } = params.batch?.[0] ?? params;
+      refetchData(new Date(start), new Date(end));
+    },
+  }}
+/>
+```
+
+## PyDM equivalent
+
+| PyDM | SWAPPS |
+|---|---|
+| `PyDMArchiverTimePlot` | `SWAPPSChart` with time axis + archiver data fetch |
+| `ArchivePlotCurveItem` | A series entry with archiver-fetched data |
+
+## Related
+
+- [Time Series](/docs/components/charts-visualization/time-series) — Live time-series data
+- [Formula Curves](/docs/components/charts-visualization/formula-curves) — Computed traces
