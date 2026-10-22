@@ -36,6 +36,7 @@ const sidebars: SidebarsConfig = {
             "components/general-ui/app-shell",
           ],
         },
+        "components/carbon-primitives",
       ],
     },
     {
@@ -65,7 +66,6 @@ const sidebars: SidebarsConfig = {
       label: "Development",
       items: [
         "development/setup",
-        "development/carbon-integration",
         "development/component-development",
         "development/styling",
         "development/versioning",

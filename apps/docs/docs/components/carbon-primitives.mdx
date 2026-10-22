@@ -1,0 +1,584 @@
+---
+title: Carbon Components
+sidebar_label: Carbon Components
+sidebar_position: 2
+---
+
+# Carbon Components
+
+SWAPPS is built on [IBM Carbon](https://carbondesignsystem.com/). For standard UI elements — buttons, inputs, tables, dialogs — use Carbon components directly. There is no SWAPPS wrapper; Carbon handles accessibility, theming, and keyboard interaction out of the box.
+
+```tsx
+import { AppHeader } from '@swapps/ui';
+import { Button, TextInput, DataTable, Modal } from '@carbon/react';
+```
+
+SWAPPS components and Carbon components work side by side with no conflicts.
+
+:::tip When to use Carbon vs. SWAPPS
+Use **Carbon** for general-purpose UI: forms, buttons, tables, navigation tabs, dialogs, notifications.
+Use **SWAPPS** for domain-specific components: application shells, scientific controls, PV displays, and visualization.
+:::
+
+## What Carbon provides
+
+- **UI primitives** — Buttons, inputs, dropdowns, tables, modals, notifications, and more.
+- **Design tokens** — Colors, typography, spacing, and layout values.
+- **Accessibility** — ARIA patterns, keyboard navigation, focus management.
+- **Theming** — Light and dark mode support through theme tokens.
+- **Grid system** — Responsive layout grid.
+
+## What SWAPPS adds
+
+SWAPPS components focus on **application-level patterns** that Carbon does not provide as single components:
+
+- Configurable application headers with organization branding
+- Navigation patterns for scientific applications
+- Application shell layouts
+- Theme configuration for multi-organization use
+- Scientific controls and visualization (planned)
+
+---
+
+## Button
+
+Triggers an action or submits a form.
+
+```tsx
+import { Button } from '@carbon/react';
+import { Add } from '@carbon/icons-react';
+
+<Button>Primary action</Button>
+<Button kind="secondary">Secondary</Button>
+<Button kind="danger">Delete experiment</Button>
+<Button kind="ghost">Cancel</Button>
+<Button renderIcon={Add} iconDescription="Add">New entry</Button>
+```
+
+- Use **primary** for the single most important action in a section.
+- Use **danger** for destructive actions (delete, remove, disconnect).
+- Use **ghost** for low-emphasis or cancel actions.
+- Limit to one primary button per section.
+- Write action-oriented labels — "Save changes", not "OK".
+- For icon-only buttons, always provide `iconDescription` for accessibility.
+
+[Carbon Button docs →](https://react.carbondesignsystem.com/?path=/story/components-button--default)
+
+---
+
+## Text Input
+
+Single-line text entry.
+
+```tsx
+import { TextInput } from '@carbon/react';
+
+<TextInput
+  id="experiment-name"
+  labelText="Experiment name"
+  helperText="A descriptive name for this experiment run"
+  placeholder="e.g., Beam commissioning 2024-Q3"
+/>
+
+<TextInput
+  id="pv-name"
+  labelText="PV address"
+  invalid={!isValidPV}
+  invalidText="Enter a valid EPICS PV address"
+/>
+```
+
+- Always provide a visible `labelText` — do not rely on placeholder alone.
+- Use `helperText` for format hints or additional context.
+- Use `invalid` and `invalidText` for validation feedback.
+- Use `readOnly` for display-only values (e.g., timestamps, computed fields).
+
+[Carbon TextInput docs →](https://react.carbondesignsystem.com/?path=/story/components-textinput--default)
+
+---
+
+## Text Area
+
+Multi-line text entry.
+
+```tsx
+import { TextArea } from '@carbon/react';
+
+<TextArea
+  id="run-notes"
+  labelText="Run notes"
+  placeholder="Describe observations during this run..."
+  rows={4}
+  enableCounter
+  maxCount={500}
+/>
+```
+
+- Use for longer-form input: notes, descriptions, comments.
+- Set `rows` to give an appropriate default height.
+- Use `enableCounter` and `maxCount` when there is a character limit.
+
+[Carbon TextArea docs →](https://react.carbondesignsystem.com/?path=/story/components-textarea--default)
+
+---
+
+## Number Input
+
+Numeric entry with increment and decrement controls.
+
+```tsx
+import { NumberInput } from '@carbon/react';
+
+<NumberInput
+  id="setpoint"
+  label="Target energy (GeV)"
+  min={0}
+  max={120}
+  step={0.1}
+  value={13.6}
+  helperText="Range: 0–120 GeV"
+/>
+```
+
+- Set `min`, `max`, and `step` to constrain valid values.
+- Use `helperText` to display the allowed range.
+- Use `invalidText` when the entered value is out of bounds.
+- Prefer this over a plain text input for any numeric field.
+
+[Carbon NumberInput docs →](https://react.carbondesignsystem.com/?path=/story/components-numberinput--default)
+
+---
+
+## Dropdown
+
+Select a single value from a list.
+
+```tsx
+import { Dropdown } from '@carbon/react';
+
+<Dropdown
+  id="beam-line"
+  titleText="Beam line"
+  label="Select beam line"
+  items={[
+    { id: 'bl-1-5', text: 'BL 1-5' },
+    { id: 'bl-2-1', text: 'BL 2-1' },
+    { id: 'bl-11-2', text: 'BL 11-2' },
+  ]}
+  itemToString={(item) => item?.text ?? ''}
+/>
+```
+
+- Use `Dropdown` when the user picks one item from a predefined list.
+- Use `titleText` to label the dropdown.
+- Use `itemToString` to control how items render as text.
+- For very long lists (50+ items), consider `ComboBox` for type-ahead filtering.
+
+[Carbon Dropdown docs →](https://react.carbondesignsystem.com/?path=/story/components-dropdown--default)
+
+---
+
+## Select
+
+Native HTML select element with Carbon styling.
+
+```tsx
+import { Select, SelectItem } from '@carbon/react';
+
+<Select id="log-level" labelText="Log level" defaultValue="info">
+  <SelectItem value="debug" text="Debug" />
+  <SelectItem value="info" text="Info" />
+  <SelectItem value="warning" text="Warning" />
+  <SelectItem value="error" text="Error" />
+</Select>
+```
+
+- Use `Select` for simple, short option lists where native behavior is sufficient.
+- Use `Dropdown` instead when you need richer item rendering or filtering.
+- Always include a `labelText`.
+
+[Carbon Select docs →](https://react.carbondesignsystem.com/?path=/story/components-select--default)
+
+---
+
+## Checkbox
+
+Boolean toggle or multi-select from a group.
+
+```tsx
+import { Checkbox } from '@carbon/react';
+
+<Checkbox id="auto-save" labelText="Auto-save every 30 seconds" />
+
+<fieldset>
+  <legend>Notify me about</legend>
+  <Checkbox id="notify-alarm" labelText="Alarm state changes" defaultChecked />
+  <Checkbox id="notify-shift" labelText="Shift handoff" />
+  <Checkbox id="notify-run" labelText="Run start/stop" />
+</fieldset>
+```
+
+- Use for boolean on/off settings or multi-select groups.
+- Group related checkboxes in a `<fieldset>` with a `<legend>`.
+- Provide clear, specific labels — "Auto-save every 30 seconds", not "Enable".
+- For a single prominent on/off switch, consider `Toggle` instead.
+
+[Carbon Checkbox docs →](https://react.carbondesignsystem.com/?path=/story/components-checkbox--default)
+
+---
+
+## Radio Button
+
+Choose exactly one option from a mutually exclusive set.
+
+```tsx
+import { RadioButtonGroup, RadioButton } from '@carbon/react';
+
+<RadioButtonGroup
+  legendText="Data acquisition mode"
+  name="daq-mode"
+  defaultSelected="continuous"
+>
+  <RadioButton labelText="Continuous" value="continuous" id="daq-continuous" />
+  <RadioButton labelText="Triggered" value="triggered" id="daq-triggered" />
+  <RadioButton labelText="Manual" value="manual" id="daq-manual" />
+</RadioButtonGroup>
+```
+
+- Use when there are 2–5 mutually exclusive options.
+- Always wrap in a `RadioButtonGroup` with a `legendText`.
+- For more than 5 options, use a `Dropdown` or `Select` instead.
+- For a two-state toggle, consider `Toggle` if the choice is clearly on/off.
+
+[Carbon RadioButton docs →](https://react.carbondesignsystem.com/?path=/story/components-radiobutton--default)
+
+---
+
+## Toggle
+
+A switch for an immediate on/off setting.
+
+```tsx
+import { Toggle } from '@carbon/react';
+
+<Toggle
+  id="dark-mode"
+  labelText="Appearance"
+  labelA="Light"
+  labelB="Dark"
+  defaultToggled
+/>
+
+<Toggle
+  id="live-updates"
+  labelText="Live PV updates"
+  labelA="Paused"
+  labelB="Streaming"
+/>
+```
+
+- Use for binary settings that take effect immediately (no submit button needed).
+- Provide `labelA` (off state) and `labelB` (on state) for clarity.
+- Use `Checkbox` instead if the setting is saved as part of a form submission.
+
+[Carbon Toggle docs →](https://react.carbondesignsystem.com/?path=/story/components-toggle--default)
+
+---
+
+## Slider
+
+Select a numeric value within a continuous range.
+
+```tsx
+import { Slider } from '@carbon/react';
+
+<Slider
+  id="motor-speed"
+  labelText="Motor speed (RPM)"
+  min={0}
+  max={3000}
+  step={50}
+  value={1500}
+/>
+```
+
+- Use when the exact value matters less than the relative position in a range.
+- Always display `min` and `max` so the user understands the scale.
+- For precise numeric entry, pair with or replace with `NumberInput`.
+- Set an appropriate `step` to avoid impractical precision.
+
+[Carbon Slider docs →](https://react.carbondesignsystem.com/?path=/story/components-slider--default)
+
+---
+
+## Date Picker
+
+Date selection with a calendar popover.
+
+```tsx
+import { DatePicker, DatePickerInput } from '@carbon/react';
+
+<DatePicker datePickerType="single" dateFormat="Y-m-d">
+  <DatePickerInput
+    id="start-date"
+    labelText="Run start date"
+    placeholder="yyyy-mm-dd"
+  />
+</DatePicker>
+
+<DatePicker datePickerType="range" dateFormat="Y-m-d">
+  <DatePickerInput id="range-start" labelText="From" placeholder="yyyy-mm-dd" />
+  <DatePickerInput id="range-end" labelText="To" placeholder="yyyy-mm-dd" />
+</DatePicker>
+```
+
+- Use `datePickerType="single"` for a single date, `"range"` for start/end.
+- Set `dateFormat` to match your application's date conventions.
+- For date-and-time entry, pair with a separate time input field.
+
+[Carbon DatePicker docs →](https://react.carbondesignsystem.com/?path=/story/components-datepicker--simple)
+
+---
+
+## Search
+
+Filterable search input.
+
+```tsx
+import { Search } from '@carbon/react';
+
+<Search
+  id="pv-search"
+  labelText="Search PVs"
+  placeholder="Filter by PV name..."
+  size="lg"
+  closeButtonLabelText="Clear search"
+  onChange={(e) => setFilter(e.target.value)}
+/>
+```
+
+- Use for filtering lists, tables, or navigation.
+- Always provide `labelText` for accessibility (it is visually hidden by default).
+- Use `closeButtonLabelText` to label the clear button.
+- For application-wide search in the header, pass `Search` as a node to `AppHeader`'s `search` prop.
+
+[Carbon Search docs →](https://react.carbondesignsystem.com/?path=/story/components-search--default)
+
+---
+
+## Content Switcher
+
+Switch between mutually exclusive views in the same content area.
+
+```tsx
+import { ContentSwitcher, Switch } from '@carbon/react';
+
+<ContentSwitcher onChange={(e) => setView(e.name)}>
+  <Switch name="table" text="Table view" />
+  <Switch name="chart" text="Chart view" />
+  <Switch name="raw" text="Raw data" />
+</ContentSwitcher>
+```
+
+- Use to toggle between different representations of the same data.
+- Keep to 2–4 options. For more, use `Tabs` or a `Dropdown`.
+- Labels should describe the view, not the action — "Table view", not "Show table".
+- This replaces PyDM's `PyDMEnumButton` pattern for enum-style selection.
+
+[Carbon ContentSwitcher docs →](https://react.carbondesignsystem.com/?path=/story/components-contentswitcher--default)
+
+---
+
+## Data Table
+
+Structured tabular data with sorting, selection, and expansion.
+
+```tsx
+import {
+  DataTable, Table, TableHead, TableRow,
+  TableHeader, TableBody, TableCell,
+} from '@carbon/react';
+
+const headers = [
+  { key: 'name', header: 'Run Name' },
+  { key: 'status', header: 'Status' },
+  { key: 'duration', header: 'Duration' },
+];
+
+const rows = [
+  { id: '1', name: 'Run 4523', status: 'Complete', duration: '2h 14m' },
+  { id: '2', name: 'Run 4524', status: 'Running', duration: '0h 47m' },
+  { id: '3', name: 'Run 4525', status: 'Queued', duration: '—' },
+];
+
+<DataTable rows={rows} headers={headers}>
+  {({ rows, headers, getTableProps, getHeaderProps, getRowProps }) => (
+    <Table {...getTableProps()}>
+      <TableHead>
+        <TableRow>
+          {headers.map((h) => (
+            <TableHeader {...getHeaderProps({ header: h })} key={h.key}>
+              {h.header}
+            </TableHeader>
+          ))}
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {rows.map((row) => (
+          <TableRow {...getRowProps({ row })} key={row.id}>
+            {row.cells.map((cell) => (
+              <TableCell key={cell.id}>{cell.value}</TableCell>
+            ))}
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  )}
+</DataTable>
+```
+
+- Every row needs a unique `id` field.
+- Use the render-props pattern shown above — Carbon manages sorting and selection state.
+- Add `isSortable` to enable column sorting.
+- Add a `TableToolbar` with `TableToolbarSearch` for in-table filtering.
+- For PV-connected tabular data with alarm columns, see the planned `PVTable` in Scientific Controls.
+
+[Carbon DataTable docs →](https://react.carbondesignsystem.com/?path=/story/components-datatable--default)
+
+---
+
+## Tabs
+
+Organize content into tabbed sections.
+
+```tsx
+import { Tabs, TabList, Tab, TabPanels, TabPanel } from '@carbon/react';
+
+<Tabs>
+  <TabList aria-label="Experiment sections">
+    <Tab>Summary</Tab>
+    <Tab>Configuration</Tab>
+    <Tab>Results</Tab>
+    <Tab disabled>Analysis (pending)</Tab>
+  </TabList>
+  <TabPanels>
+    <TabPanel>Summary content...</TabPanel>
+    <TabPanel>Configuration content...</TabPanel>
+    <TabPanel>Results content...</TabPanel>
+    <TabPanel>Analysis content...</TabPanel>
+  </TabPanels>
+</Tabs>
+```
+
+- Use for organizing related content that doesn't need to be viewed simultaneously.
+- Always provide `aria-label` on `TabList`.
+- Use `disabled` for tabs whose content is not yet available.
+- Keep tab labels short — one or two words.
+- For view-mode switching within the same data, prefer `ContentSwitcher`.
+
+[Carbon Tabs docs →](https://react.carbondesignsystem.com/?path=/story/components-tabs--default)
+
+---
+
+## Modal
+
+Dialog overlay for confirmations, forms, or focused tasks.
+
+```tsx
+import { Modal } from '@carbon/react';
+
+<Modal
+  open={isOpen}
+  onRequestClose={() => setIsOpen(false)}
+  modalHeading="Confirm deletion"
+  primaryButtonText="Delete"
+  secondaryButtonText="Cancel"
+  danger
+>
+  <p>
+    This will permanently delete run <strong>Run 4523</strong> and all
+    associated data. This action cannot be undone.
+  </p>
+</Modal>
+```
+
+- Use sparingly — modals interrupt workflow.
+- Always include a way to dismiss (close button, Cancel, Escape key).
+- Use the `danger` prop for destructive confirmations.
+- Write specific, actionable copy — name the item being affected.
+- For complex forms, consider a full page or side panel instead.
+
+[Carbon Modal docs →](https://react.carbondesignsystem.com/?path=/story/components-modal--default)
+
+---
+
+## Notification
+
+Inline or toast messages for status feedback.
+
+```tsx
+import { InlineNotification, ToastNotification } from '@carbon/react';
+
+{/* Inline — appears within the page flow */}
+<InlineNotification
+  kind="success"
+  title="Configuration saved"
+  subtitle="Beam line BL 2-1 settings updated."
+/>
+
+<InlineNotification
+  kind="error"
+  title="Connection failed"
+  subtitle="Could not reach IOC gateway. Check network settings."
+  lowContrast
+/>
+
+{/* Toast — appears temporarily in a corner */}
+<ToastNotification
+  kind="info"
+  title="Shift handoff"
+  subtitle="Operator shift changes in 15 minutes."
+  timeout={8000}
+/>
+```
+
+- Use **inline** for persistent feedback within the page (form errors, save confirmations).
+- Use **toast** for transient, non-blocking messages.
+- Set an appropriate `timeout` for toasts — 5–8 seconds for info, longer for warnings.
+- Use `lowContrast` for a softer appearance in dense layouts.
+
+| Kind | When to use |
+|---|---|
+| `info` | General information, status updates |
+| `success` | Completed action confirmation |
+| `warning` | Potential issue that doesn't block the user |
+| `error` | Failure that requires attention |
+
+[Carbon Notification docs →](https://react.carbondesignsystem.com/?path=/story/components-notifications-inline--default)
+
+---
+
+## Loading Carbon styles
+
+Carbon requires its stylesheet. Include it once in your application entry point:
+
+```tsx
+import '@carbon/react/es/styles.css';
+```
+
+Or with Sass for more control:
+
+```scss
+@use '@carbon/react';
+```
+
+## Carbon version
+
+`@swapps/ui` declares `@carbon/react` as a dependency. The version is managed by the package and should not need to be installed separately.
+
+## Resources
+
+- [Carbon React storybook](https://react.carbondesignsystem.com/) — Live examples of every component
+- [Carbon design guidelines](https://carbondesignsystem.com/) — Usage patterns and design rationale
+- [Form pattern guidelines](https://carbondesignsystem.com/patterns/forms-pattern/) — Layout, validation, and accessibility for forms
+- [Carbon GitHub](https://github.com/carbon-design-system/carbon) — Source code and issue tracker

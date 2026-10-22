@@ -1,0 +1,121 @@
+PyDM Component Replacements
+============================
+
+1. GENERAL UI — Replace with Carbon (@carbon/react)
+----------------------------------------------------
+
+PyDM Widget              Carbon Component        Notes
+-----------              ----------------        -----
+PyDMPushButton           Button                  Action trigger; PV write on click
+PyDMCheckbox             Checkbox                Boolean PV toggle
+PyDMLineEdit             TextInput               String/numeric PV entry
+PyDMSpinbox              NumberInput             Numeric with increment/decrement
+PyDMSlider               Slider                  Continuous numeric range input
+PyDMEnumComboBox         Dropdown                Enum PV as dropdown selector
+PyDMEnumButton           ContentSwitcher         Enum PV as segmented button group
+PyDMDateTimeEdit         DatePicker              Date/time entry
+PyDMDateTimeLabel        TextInput (readOnly)    Timestamp display
+PyDMShellCommand         Button                  Server action trigger
+PyDMRelatedDisplayButton Button + Link           Navigation; use React Router
+PyDMTabWidget            Tabs                    Tabbed container
+PyDMFrame                Tile                    Grouping container
+PyDMLogDisplay           CodeSnippet (multi)     Scrollable log viewer
+
+
+2. SCIENTIFIC CONTROLS — Build in @swapps/controls
+---------------------------------------------------
+
+PyDM Widget              SWAPPS Component        Notes
+-----------              ----------------        -----
+PyDMLabel                PVLabel                 Value + units + precision + alarm coloring
+PyDMByteIndicator        ByteIndicator           Bit-level integer visualization
+PyDMScaleIndicator       ScaleIndicator          Linear gauge with alarm-range bands
+PyDMMultiStateIndicator  MultiStateIndicator     N-state colored indicator
+PyDMSymbol               PVSymbol                SVG icon changes with PV state
+Analog Indicator         AnalogGauge             Radial dial gauge with alarm arcs
+PyDMImageView            ImageViewer             2D array / camera image with color maps
+PyDMNTTable              PVTable                 Normative-type table with PV columns
+PyDMEmbeddedDisplay      EmbeddedDisplay         Loads another display inline
+PyDMTemplateRepeater     TemplateRepeater        Repeats template per data item
+
+
+3. VISUALIZATION — Build in @swapps/charts
+------------------------------------------
+
+PyDM Widget              SWAPPS Component        Notes
+-----------              ----------------        -----
+PyDMTimePlot             TimeSeries              Live scrolling time-series
+TimePlotCurveItem        TimeSeriesCurve         Trace config for TimeSeries
+PyDMWaveformPlot         WaveformPlot            Array PV as line chart
+WaveformCurveItem        WaveformCurve           Trace config for WaveformPlot
+PyDMScatterPlot          ScatterPlot             X-Y scatter with optional color dimension
+ScatterPlotCurveItem     ScatterSeries           Point series config
+PyDMEventPlot            EventPlot               Discrete event markers on timeline
+PyDMArchiverTimePlot     ArchiverPlot            EPICS Archiver Appliance with chunked loading
+ArchivePlotCurveItem     ArchiverCurve           Archiver-specific binning config
+FormulaCurveItem         FormulaCurve            Computed trace from expression over curves
+
+
+Why Scientific Controls can't be replaced by Carbon
+----------------------------------------------------
+
+Carbon provides general-purpose UI primitives — buttons, inputs, tables, tabs — designed
+for standard business applications. The scientific control widgets require capabilities
+that no Carbon component offers:
+
+- Alarm severity awareness. Every scientific control must visually reflect the alarm
+  state of the underlying process variable (none, minor, major, invalid, disconnected)
+  through color, borders, and icons. Carbon components have no concept of alarm states
+  and no built-in severity color system.
+
+- PV-specific data formatting. Components like PVLabel need to display engineering
+  notation, configurable decimal precision, and physical units (GeV, mA, Torr) derived
+  from the control system metadata. A Carbon TextInput or label has no opinion about
+  how to format a floating-point value from a control system channel.
+
+- Specialized rendering. A ByteIndicator renders individual bits of an integer as a
+  row of colored cells. A ScaleIndicator draws a linear gauge with alarm-range bands.
+  An AnalogGauge draws a radial dial. A PVSymbol swaps SVG artwork based on device
+  state (valve open/closed, shutter in/out). None of these have a visual equivalent in
+  Carbon's component library.
+
+- Continuous live updates. These widgets are designed to update at high frequency from
+  a live data source (EPICS Channel Access / pvAccess). They need to handle connection
+  state, reconnection, and stale-data indication at the component level, not just
+  render static props.
+
+- Domain-specific composition. TemplateRepeater generates a list of identical widget
+  groups from a PV list — a pattern unique to control system displays. EmbeddedDisplay
+  loads a full sub-display from a separate definition, which has no parallel in Carbon.
+
+
+Why Visualization can't be replaced by Carbon
+----------------------------------------------
+
+Carbon does not include a charting or plotting library. The visualization widgets
+require a purpose-built charting layer because:
+
+- Real-time streaming. TimeSeries plots must append data points continuously from live
+  PV subscriptions, scrolling the time axis while maintaining smooth 60fps rendering.
+  This demands a GPU-accelerated or canvas-based renderer, not DOM-based components.
+
+- EPICS Archiver integration. ArchiverPlot fetches historical data from the EPICS
+  Archiver Appliance, handling chunked loading, server-side binning, and time-range
+  navigation. This is a data source that no generic charting library connects to
+  out of the box.
+
+- Waveform rendering. WaveformPlot displays array-type PVs (thousands of points per
+  update at ~10 Hz) as line charts. This volume of data at that refresh rate requires
+  specialized downsampling and WebGL or canvas rendering.
+
+- Formula curves. FormulaCurve computes derived traces from mathematical expressions
+  over other curves (e.g., "A - B", "sqrt(C)"), requiring an expression parser and
+  synchronization across multiple data streams.
+
+- Plot-specific interaction. All plot types need synchronized cursors, crosshairs,
+  zoom/pan, axis linking, and a shared legend system. These are domain interactions
+  that must be consistent across plot types and don't exist in Carbon.
+
+- Scientific axis requirements. Plots need logarithmic scales, engineering-notation
+  tick labels, physical unit display, and alarm-threshold overlay lines — none of
+  which are part of a standard UI component library.
