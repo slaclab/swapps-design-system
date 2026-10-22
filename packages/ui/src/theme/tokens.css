@@ -1,0 +1,36 @@
+/*
+ * SWAPPS Design System — CSS Custom Property Tokens
+ *
+ * These extend Carbon's token system with SWAPPS-specific concerns:
+ * 1. Brand tokens — organization identity colors (general UI only)
+ * 2. Semantic status tokens — functional meaning for controls
+ * 3. Visualization tokens — chart/data palettes
+ *
+ * Brand tokens intentionally have NO default value so they are inert
+ * unless explicitly configured by the application or theme provider.
+ */
+
+:root {
+  /* ── Brand tokens (general UI components only) ── */
+  --swapps-brand-primary: transparent;
+  --swapps-brand-accent: transparent;
+
+  /* ── Semantic status tokens (controls & indicators) ── */
+  --swapps-status-normal: #24a148;
+  --swapps-status-warning: #f1c21b;
+  --swapps-status-error: #da1e28;
+  --swapps-status-critical: #a2191f;
+  --swapps-status-disabled: #c6c6c6;
+  --swapps-status-disconnected: #8d8d8d;
+  --swapps-status-unknown: #a8a8a8;
+
+  /* ── Visualization palette (chart series, independent of branding) ── */
+  --swapps-viz-series-1: #6929c4;
+  --swapps-viz-series-2: #1192e8;
+  --swapps-viz-series-3: #005d5d;
+  --swapps-viz-series-4: #9f1853;
+  --swapps-viz-series-5: #fa4d56;
+  --swapps-viz-series-6: #570408;
+  --swapps-viz-series-7: #198038;
+  --swapps-viz-series-8: #002d9c;
+}
