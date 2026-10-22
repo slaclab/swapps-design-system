@@ -1,0 +1,103 @@
+---
+title: PVLabel
+sidebar_position: 1
+---
+
+# PVLabel
+
+Displays a process variable value with units, precision formatting, and alarm-severity coloring. The primary readback widget for showing scalar PV values in a control system display.
+
+Inspired by [PyDMLabel](https://slaclab.github.io/pydm/widgets/label.html).
+
+## Usage
+
+```tsx
+import { PVLabel } from '@swapps/controls';
+
+<PVLabel
+  value={13.602}
+  units="GeV"
+  precision={3}
+/>
+
+<PVLabel
+  value={2.41e-9}
+  units="Torr"
+  format="exponential"
+  precision={2}
+  alarmSeverity="minor"
+/>
+
+<PVLabel
+  value={120.5}
+  units="mA"
+  alarmSeverity="none"
+  connected
+/>
+```
+
+## Display formats
+
+PVLabel supports several numeric formatting modes:
+
+| Format | Example | Use case |
+|---|---|---|
+| `default` | `13.602` | General-purpose numeric display |
+| `exponential` | `2.41e-9` | Very large or very small values |
+| `engineering` | `2.41 n` | Values with SI prefix (n, µ, m, k, M, G) |
+| `hex` | `0x1A3F` | Register values, addresses |
+| `binary` | `0b1101` | Bit patterns |
+| `string` | `Running` | Enum or string PVs |
+
+## Alarm behavior
+
+The label text color changes based on alarm severity:
+
+| Severity | Behavior |
+|---|---|
+| `none` | Default text color |
+| `minor` | Yellow/amber text |
+| `major` | Red text |
+| `invalid` | Magenta/purple text |
+| `disconnected` | Greyed out, displays last known value or `---` |
+
+When `connected` is `false`, the component displays a disconnected state regardless of the last known value.
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `number \| string \| null` | — | The current PV value to display. |
+| `units` | `string` | — | Engineering units displayed after the value. |
+| `precision` | `number` | `3` | Number of decimal places for numeric values. |
+| `format` | `DisplayFormat` | `'default'` | Numeric display format. See table above. |
+| `alarmSeverity` | `AlarmSeverity` | `'none'` | Current alarm state. Drives text color. |
+| `connected` | `boolean` | `true` | Whether the PV connection is active. |
+| `showUnits` | `boolean` | `true` | Whether to display the units string. |
+| `className` | `string` | — | Additional CSS class. |
+
+### DisplayFormat
+
+```ts
+type DisplayFormat = 'default' | 'exponential' | 'engineering' | 'hex' | 'binary' | 'string';
+```
+
+## Accessibility
+
+- Renders as an inline text element with `role="status"` so screen readers announce value changes.
+- Alarm severity is conveyed through `aria-label` in addition to color, not color alone.
+- Disconnected state includes an `aria-live="polite"` announcement.
+
+## PyDM equivalent
+
+Replaces `PyDMLabel`. Key differences:
+
+- Formatting is controlled via the `format` prop rather than a format string.
+- Alarm colors come from the SWAPPS alarm token system, not hardcoded Qt colors.
+- Units are displayed inline rather than in a separate label widget.
+
+## Related
+
+- [ScaleIndicator](/docs/components/scientific-controls/scale-indicator) — Show a value as a bar gauge
+- [MultiStateIndicator](/docs/components/scientific-controls/multi-state-indicator) — Show a discrete state
+- [PVTable](/docs/components/scientific-controls/pv-table) — Tabular PV display

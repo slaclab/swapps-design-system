@@ -1,0 +1,120 @@
+---
+title: Scientific Controls
+sidebar_label: Scientific Controls
+sidebar_position: 1
+---
+
+import Link from '@docusaurus/Link';
+import Thumb from '@site/src/components/ComponentCardThumbnail';
+
+# Scientific Controls
+
+Domain-specific widgets from `@swapps/controls` for displaying and interacting with process variable data. These components provide alarm-severity awareness, PV-specific formatting, and specialized rendering that general-purpose Carbon components cannot.
+
+Inspired by [PyDM](https://slaclab.github.io/pydm/) display and container widgets, rebuilt for the web with React, Carbon theming, and the SWAPPS alarm system.
+
+## Shared concepts
+
+All scientific control components share a common alarm severity model:
+
+```ts
+type AlarmSeverity = 'none' | 'minor' | 'major' | 'invalid' | 'disconnected';
+```
+
+Components accept `alarmSeverity` and `connected` props through the shared `BaseWidgetProps` interface. Alarm state drives border color, text color, and indicator fills automatically.
+
+## Display widgets
+
+Presentational widgets for showing process variable values, states, and measurements.
+
+<div className="swapps-component-cards">
+
+<Link to="/docs/components/scientific-controls/pv-label" className="swapps-component-card">
+  <div className="swapps-component-card__body">
+    <span className="swapps-component-card__badge swapps-component-card__badge--available">Available</span>
+    <h3>PVLabel</h3>
+    <p>Displays a process variable value with units, precision formatting, and alarm-severity coloring.</p>
+  </div>
+</Link>
+
+<Link to="/docs/components/scientific-controls/byte-indicator" className="swapps-component-card">
+  <div className="swapps-component-card__body">
+    <span className="swapps-component-card__badge swapps-component-card__badge--available">Available</span>
+    <h3>ByteIndicator</h3>
+    <p>Visualizes individual bits of an integer as a row of colored indicator cells.</p>
+  </div>
+</Link>
+
+<Link to="/docs/components/scientific-controls/scale-indicator" className="swapps-component-card">
+  <div className="swapps-component-card__body">
+    <span className="swapps-component-card__badge swapps-component-card__badge--available">Available</span>
+    <h3>ScaleIndicator</h3>
+    <p>Linear gauge showing a value within a defined range, with alarm-threshold bands.</p>
+  </div>
+</Link>
+
+<Link to="/docs/components/scientific-controls/multi-state-indicator" className="swapps-component-card">
+  <div className="swapps-component-card__body">
+    <span className="swapps-component-card__badge swapps-component-card__badge--available">Available</span>
+    <h3>MultiStateIndicator</h3>
+    <p>Colored indicator reflecting one of N defined states with configurable labels and colors.</p>
+  </div>
+</Link>
+
+<Link to="/docs/components/scientific-controls/pv-symbol" className="swapps-component-card">
+  <div className="swapps-component-card__body">
+    <span className="swapps-component-card__badge swapps-component-card__badge--available">Available</span>
+    <h3>PVSymbol</h3>
+    <p>SVG icon that changes appearance based on process variable state (valve open/closed, shutter in/out).</p>
+  </div>
+</Link>
+
+<Link to="/docs/components/scientific-controls/analog-gauge" className="swapps-component-card">
+  <div className="swapps-component-card__body">
+    <span className="swapps-component-card__badge swapps-component-card__badge--available">Available</span>
+    <h3>AnalogGauge</h3>
+    <p>Radial dial gauge with alarm-range arcs and a needle indicator.</p>
+  </div>
+</Link>
+
+<Link to="/docs/components/scientific-controls/image-viewer" className="swapps-component-card">
+  <div className="swapps-component-card__body">
+    <span className="swapps-component-card__badge swapps-component-card__badge--available">Available</span>
+    <h3>ImageViewer</h3>
+    <p>Displays 2D array data or camera images with configurable color maps and zoom.</p>
+  </div>
+</Link>
+
+<Link to="/docs/components/scientific-controls/pv-table" className="swapps-component-card">
+  <div className="swapps-component-card__body">
+    <span className="swapps-component-card__badge swapps-component-card__badge--available">Available</span>
+    <h3>PVTable</h3>
+    <p>Tabular display of normative-type PV data, built on Carbon DataTable with alarm-aware columns.</p>
+  </div>
+</Link>
+
+</div>
+
+## Container widgets
+
+Widgets for organizing and grouping other widgets in control system displays.
+
+<div className="swapps-component-cards">
+
+<Link to="/docs/components/scientific-controls/embedded-display" className="swapps-component-card">
+  <div className="swapps-component-card__body">
+    <span className="swapps-component-card__badge swapps-component-card__badge--available">Available</span>
+    <h3>EmbeddedDisplay</h3>
+    <p>Loads and renders another display definition inline within the current layout.</p>
+  </div>
+</Link>
+
+<Link to="/docs/components/scientific-controls/template-repeater" className="swapps-component-card">
+  <div className="swapps-component-card__body">
+    <span className="swapps-component-card__badge swapps-component-card__badge--available">Available</span>
+    <h3>TemplateRepeater</h3>
+    <p>Repeats a render template for each item in a data array, generating uniform widget groups.</p>
+  </div>
+</Link>
+
+</div>

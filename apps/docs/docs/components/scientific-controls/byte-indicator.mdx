@@ -1,0 +1,81 @@
+---
+title: ByteIndicator
+sidebar_position: 2
+---
+
+# ByteIndicator
+
+Visualizes individual bits of an integer value as a row or column of colored indicator cells. Used for displaying bit fields, status registers, and digital I/O states in control system displays.
+
+Inspired by [PyDMByteIndicator](https://slaclab.github.io/pydm/widgets/byte.html).
+
+## Usage
+
+```tsx
+import { ByteIndicator } from '@swapps/controls';
+
+{/* Basic — show 8 bits of an integer */}
+<ByteIndicator value={0b10110010} numBits={8} />
+
+{/* With labels for each bit */}
+<ByteIndicator
+  value={statusWord}
+  numBits={4}
+  labels={['Beam On', 'RF Ready', 'Vacuum OK', 'Interlock']}
+  orientation="vertical"
+/>
+
+{/* Custom on/off colors */}
+<ByteIndicator
+  value={digitalOutputs}
+  numBits={16}
+  onColor="#24a148"
+  offColor="#525252"
+/>
+```
+
+## Layout
+
+ByteIndicator renders as a flex container of individual bit cells. The `orientation` prop controls whether bits flow horizontally or vertically.
+
+Bit ordering follows MSB-first by default (bit 0 on the right for horizontal, bit 0 at the bottom for vertical). Set `bitOrder="lsb"` to reverse.
+
+## Alarm behavior
+
+When `alarmSeverity` is set, the container border reflects the alarm state. Individual bit colors are not overridden by the alarm — only the surrounding indicator frame changes.
+
+When `connected` is `false`, all bits render in the disconnected color.
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `number` | `0` | Integer value whose bits are displayed. |
+| `numBits` | `number` | `8` | Number of bits to display (1–32). |
+| `labels` | `string[]` | — | Optional label for each bit, displayed as a tooltip or adjacent text. |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Direction of bit cell layout. |
+| `bitOrder` | `'msb' \| 'lsb'` | `'msb'` | Whether the most or least significant bit appears first. |
+| `onColor` | `string` | `'#24a148'` | Color for a bit that is 1. |
+| `offColor` | `string` | `'#525252'` | Color for a bit that is 0. |
+| `alarmSeverity` | `AlarmSeverity` | `'none'` | Alarm state for the container border. |
+| `connected` | `boolean` | `true` | Whether the PV connection is active. |
+| `className` | `string` | — | Additional CSS class. |
+
+## Accessibility
+
+- Each bit cell has an `aria-label` describing its position and state (e.g., "Bit 3: on — Vacuum OK").
+- The overall component has `role="group"` with an accessible label.
+- Bit states are not conveyed by color alone — labels and ARIA attributes provide equivalent information.
+
+## PyDM equivalent
+
+Replaces `PyDMByteIndicator`. Key differences:
+
+- Supports both horizontal and vertical layout via a prop rather than requiring a separate widget configuration.
+- Bit labels are passed as a prop array rather than configured through a designer dialog.
+- Colors use CSS custom properties and respect the Carbon theme.
+
+## Related
+
+- [MultiStateIndicator](/docs/components/scientific-controls/multi-state-indicator) — Discrete state display
+- [PVLabel](/docs/components/scientific-controls/pv-label) — Numeric value display

@@ -1,0 +1,92 @@
+---
+title: PVSymbol
+sidebar_position: 5
+---
+
+# PVSymbol
+
+An SVG icon that changes appearance based on a process variable state. Used for schematic diagrams where device status is shown graphically — valves, shutters, magnets, pumps, and other beamline components.
+
+Inspired by [PyDMSymbol](https://slaclab.github.io/pydm/widgets/symbol.html).
+
+## Usage
+
+```tsx
+import { PVSymbol } from '@swapps/controls';
+
+{/* Valve symbol — changes between open and closed SVGs */}
+<PVSymbol
+  value={valveState}
+  symbols={[
+    { value: 0, src: '/symbols/valve-closed.svg', label: 'Closed' },
+    { value: 1, src: '/symbols/valve-open.svg', label: 'Open' },
+  ]}
+/>
+
+{/* Inline SVG with state-driven fill */}
+<PVSymbol
+  value={pumpStatus}
+  symbols={[
+    { value: 0, label: 'Off', fill: '#525252' },
+    { value: 1, label: 'Running', fill: '#24a148' },
+    { value: 2, label: 'Fault', fill: '#da1e28' },
+  ]}
+  alarmSeverity={pumpAlarm}
+>
+  <svg viewBox="0 0 48 48">
+    <circle cx="24" cy="24" r="20" />
+    <path d="M24 8 L24 40 M12 16 L24 24 L12 32" />
+  </svg>
+</PVSymbol>
+```
+
+## Symbol sources
+
+PVSymbol supports two approaches:
+
+1. **External SVG files** — Each state maps to a different `.svg` file via the `src` property. The component swaps the displayed file when the value changes.
+2. **Inline SVG with dynamic fill** — A single SVG is passed as `children`, and the `fill` property from the matched state is applied. Useful for simple symbols where only color changes.
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `number \| string` | — | Current PV value, matched against `symbols[].value`. |
+| `symbols` | `SymbolDefinition[]` | **(required)** | State-to-symbol mapping. See below. |
+| `width` | `number \| string` | `48` | Symbol display width. |
+| `height` | `number \| string` | `48` | Symbol display height. |
+| `rotation` | `number` | `0` | Rotation in degrees. Useful for orienting schematic components. |
+| `alarmSeverity` | `AlarmSeverity` | `'none'` | Alarm state. Adds a colored border or overlay. |
+| `connected` | `boolean` | `true` | Whether the PV connection is active. |
+| `children` | `ReactNode` | — | Inline SVG element for fill-based state changes. |
+| `className` | `string` | — | Additional CSS class. |
+
+### SymbolDefinition
+
+```ts
+interface SymbolDefinition {
+  value: number | string;
+  label: string;
+  src?: string;
+  fill?: string;
+}
+```
+
+## Accessibility
+
+- Renders with `role="img"` and an `aria-label` from the matched state's `label`.
+- State changes trigger `aria-live="polite"` announcements.
+- Not conveyed by visual appearance alone — labels provide equivalent information.
+
+## PyDM equivalent
+
+Replaces `PyDMSymbol`. Key differences:
+
+- Supports both file-swapping and fill-based approaches in a single component.
+- SVG files are referenced by URL rather than embedded in a `.ui` file.
+- Rotation is a prop rather than a separate transform configuration.
+
+## Related
+
+- [MultiStateIndicator](/docs/components/scientific-controls/multi-state-indicator) — Non-graphical state display
+- [ByteIndicator](/docs/components/scientific-controls/byte-indicator) — Bit-level status

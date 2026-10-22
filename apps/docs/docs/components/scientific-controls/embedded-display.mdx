@@ -1,0 +1,90 @@
+---
+title: EmbeddedDisplay
+sidebar_position: 9
+---
+
+# EmbeddedDisplay
+
+Loads and renders another display definition inline within the current layout. Used for composing complex control screens from reusable sub-displays — a beamline overview might embed individual device panels, each defined and maintained separately.
+
+Inspired by [PyDMEmbeddedDisplay](https://slaclab.github.io/pydm/widgets/embedded_display.html).
+
+## Usage
+
+```tsx
+import { EmbeddedDisplay } from '@swapps/controls';
+
+{/* Load a display by path */}
+<EmbeddedDisplay src="/displays/vacuum-gauge-panel" />
+
+{/* With macro substitutions */}
+<EmbeddedDisplay
+  src="/displays/motor-control"
+  macros={{ DEVICE: 'MOTOR:LI21:201', LABEL: 'Quad 1' }}
+/>
+
+{/* Fixed size with scroll */}
+<EmbeddedDisplay
+  src="/displays/camera-overview"
+  width={800}
+  height={600}
+  overflow="scroll"
+/>
+```
+
+## Macro substitutions
+
+Embedded displays support macro substitution — placeholders in the loaded display are replaced with values from the `macros` prop. This is the primary mechanism for reuse: a single motor control panel definition can be instantiated for dozens of different motors by passing different PV prefixes.
+
+```tsx
+{/* The loaded display references $(DEVICE) and $(LABEL) */}
+<EmbeddedDisplay
+  src="/displays/motor-control"
+  macros={{ DEVICE: 'MOTOR:LI21:201', LABEL: 'Upstream Quad' }}
+/>
+```
+
+## Loading strategies
+
+| Strategy | Behavior |
+|---|---|
+| `lazy` (default) | Loads when the component enters the viewport (IntersectionObserver). |
+| `eager` | Loads immediately on mount. |
+| `manual` | Does not load until `load()` is called via ref. |
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `src` | `string` | **(required)** | Path or URL to the display definition. |
+| `macros` | `Record<string, string>` | `{}` | Macro substitutions applied to the loaded display. |
+| `width` | `number \| string` | `'100%'` | Container width. |
+| `height` | `number \| string` | `'auto'` | Container height. |
+| `overflow` | `'visible' \| 'hidden' \| 'scroll'` | `'visible'` | Overflow behavior when content exceeds container. |
+| `loading` | `'lazy' \| 'eager' \| 'manual'` | `'lazy'` | When to load the sub-display. |
+| `fallback` | `ReactNode` | Loading spinner | Content shown while the display is loading. |
+| `onLoad` | `() => void` | — | Callback when the display finishes loading. |
+| `onError` | `(error: Error) => void` | — | Callback when loading fails. |
+| `className` | `string` | — | Additional CSS class. |
+
+## Error handling
+
+If the referenced display fails to load (network error, invalid path, parse error), EmbeddedDisplay renders an inline error message showing the failed `src` path and the error. It does not crash the parent display.
+
+## Accessibility
+
+- The embedded content is rendered inline in the DOM (not in an iframe), so it participates in the parent page's focus order and accessibility tree.
+- Lazy loading does not affect accessibility — content is present by the time a user scrolls to it.
+
+## PyDM equivalent
+
+Replaces `PyDMEmbeddedDisplay`. Key differences:
+
+- Loads React components or display definitions via dynamic import, not `.ui` files.
+- Macro substitution uses a `Record<string, string>` prop rather than a string-encoded format.
+- Supports lazy loading for performance in large display hierarchies.
+
+## Related
+
+- [TemplateRepeater](/docs/components/scientific-controls/template-repeater) — Repeat a template for each item in a list
+- [AppShell](/docs/components/general-ui/app-shell) — Application-level layout container

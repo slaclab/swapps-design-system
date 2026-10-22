@@ -1,0 +1,92 @@
+---
+title: AnalogGauge
+sidebar_position: 6
+---
+
+# AnalogGauge
+
+A radial dial gauge with a needle indicator and alarm-range arcs. Provides an analog-meter aesthetic for monitoring continuous values like pressure, temperature, and current.
+
+Inspired by PyDM's Analog Indicator widget.
+
+## Usage
+
+```tsx
+import { AnalogGauge } from '@swapps/controls';
+
+{/* Basic dial gauge */}
+<AnalogGauge
+  value={1850}
+  min={0}
+  max={3000}
+  units="RPM"
+/>
+
+{/* With alarm thresholds */}
+<AnalogGauge
+  value={beamCurrent}
+  min={0}
+  max={500}
+  units="mA"
+  thresholds={{
+    low: 50,
+    high: 400,
+    hihi: 475,
+  }}
+  alarmSeverity={currentAlarm}
+/>
+
+{/* 180° half-gauge */}
+<AnalogGauge
+  value={temperature}
+  min={0}
+  max={200}
+  units="°C"
+  arcSpan={180}
+/>
+```
+
+## Gauge anatomy
+
+The gauge renders as an SVG with the following elements:
+
+- **Arc background** — The full range rendered as a subtle track.
+- **Threshold arcs** — Colored segments marking normal, warning, and alarm zones.
+- **Needle** — A pointer indicating the current value, animated on change.
+- **Value label** — The numeric value and units displayed at the gauge center.
+- **Tick marks** — Major and minor graduations around the arc.
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `number` | — | Current value to indicate. |
+| `min` | `number` | `0` | Minimum scale value. |
+| `max` | `number` | `100` | Maximum scale value. |
+| `units` | `string` | — | Engineering units label. |
+| `arcSpan` | `number` | `270` | Arc sweep in degrees (180 for half-gauge, 270 for three-quarter). |
+| `showValue` | `boolean` | `true` | Display the numeric value inside the gauge. |
+| `showTicks` | `boolean` | `true` | Display tick marks around the arc. |
+| `tickCount` | `number` | `5` | Number of major tick labels. |
+| `thresholds` | `ThresholdConfig` | — | Alarm threshold boundaries (same as ScaleIndicator). |
+| `animateNeedle` | `boolean` | `true` | Animate needle transitions. Respects `prefers-reduced-motion`. |
+| `alarmSeverity` | `AlarmSeverity` | `'none'` | Current alarm state. Drives needle and border color. |
+| `connected` | `boolean` | `true` | Whether the PV connection is active. |
+| `className` | `string` | — | Additional CSS class. |
+
+## Accessibility
+
+- Uses `role="meter"` with `aria-valuenow`, `aria-valuemin`, `aria-valuemax`.
+- Value and units are exposed as accessible text.
+- Needle animation respects `prefers-reduced-motion`.
+
+## Design considerations
+
+- Use AnalogGauge when the visual metaphor of a physical dial gauge adds value (e.g., replicating an existing control room layout).
+- For dense layouts or dashboards where space is limited, prefer [ScaleIndicator](/docs/components/scientific-controls/scale-indicator) — it communicates the same information in less space.
+- Avoid using many gauges in a single view; they consume significant visual real estate.
+
+## Related
+
+- [ScaleIndicator](/docs/components/scientific-controls/scale-indicator) — Linear gauge (more compact)
+- [PVLabel](/docs/components/scientific-controls/pv-label) — Numeric readback only

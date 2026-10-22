@@ -1,0 +1,103 @@
+---
+title: PVTable
+sidebar_position: 8
+---
+
+# PVTable
+
+Tabular display of process variable data, built on Carbon DataTable with alarm-aware columns, live-updating cells, and PV-specific formatting. Used for monitoring banks of related PVs (magnet settings, BPM readings, temperature sensor arrays).
+
+Inspired by [PyDMNTTable](https://slaclab.github.io/pydm/widgets/nt_table.html) and [PyDMWaveformTable](https://slaclab.github.io/pydm/widgets/waveform_table.html).
+
+## Usage
+
+```tsx
+import { PVTable } from '@swapps/controls';
+
+{/* Basic — list of PVs with live values */}
+<PVTable
+  rows={[
+    { id: 'bpm-1', label: 'BPM 1', pv: 'QUAD:LI21:201:BACT', units: 'mm' },
+    { id: 'bpm-2', label: 'BPM 2', pv: 'QUAD:LI21:301:BACT', units: 'mm' },
+    { id: 'bpm-3', label: 'BPM 3', pv: 'QUAD:LI21:401:BACT', units: 'mm' },
+  ]}
+  columns={['label', 'value', 'units', 'severity']}
+/>
+
+{/* With editable setpoints */}
+<PVTable
+  rows={magnetRows}
+  columns={['label', 'readback', 'setpoint', 'units', 'severity']}
+  editableColumns={['setpoint']}
+  onSetpointChange={(rowId, value) => writePV(rowId, value)}
+/>
+```
+
+## Column types
+
+PVTable provides predefined column types that handle PV-specific rendering:
+
+| Column | Renders as | Description |
+|---|---|---|
+| `label` | Text | Human-readable device name |
+| `value` / `readback` | PVLabel | Live value with precision formatting |
+| `setpoint` | NumberInput | Editable target value |
+| `units` | Text | Engineering units |
+| `severity` | MultiStateIndicator | Current alarm severity as a colored badge |
+| `status` | Text | Connection status or device state |
+
+Custom columns can be added via a render function.
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `rows` | `PVTableRow[]` | **(required)** | Array of row definitions. Each row describes one PV or device. |
+| `columns` | `string[]` | `['label', 'value', 'units']` | Which columns to display, in order. |
+| `editableColumns` | `string[]` | `[]` | Columns that allow inline editing. |
+| `onSetpointChange` | `(rowId: string, value: number) => void` | — | Callback when an editable cell is committed. |
+| `sortable` | `boolean` | `true` | Enable column sorting. |
+| `filterable` | `boolean` | `false` | Show a search bar for filtering rows. |
+| `precision` | `number` | `3` | Default decimal precision for value columns. |
+| `className` | `string` | — | Additional CSS class. |
+
+### PVTableRow
+
+```ts
+interface PVTableRow {
+  id: string;
+  label: string;
+  pv?: string;
+  units?: string;
+  precision?: number;
+  [key: string]: unknown;
+}
+```
+
+## Built on Carbon DataTable
+
+PVTable wraps Carbon's `DataTable`, `Table`, `TableHead`, `TableBody`, `TableRow`, `TableCell`, and `TableToolbar` components. It inherits Carbon's sorting, selection, and toolbar patterns while adding:
+
+- Alarm-severity cell coloring
+- Live-updating value cells
+- PV-aware number formatting
+- Inline setpoint editing
+
+## Accessibility
+
+- Inherits Carbon DataTable's full keyboard navigation and ARIA table semantics.
+- Alarm severity in cells is conveyed through text labels, not color alone.
+- Editable cells are announced as interactive.
+
+## PyDM equivalent
+
+Replaces `PyDMNTTable` and `PyDMWaveformTable`. Key differences:
+
+- Built on Carbon DataTable rather than a custom Qt table widget.
+- Column configuration is declarative via props rather than a designer dialog.
+- Supports inline setpoint editing with a callback pattern.
+
+## Related
+
+- [PVLabel](/docs/components/scientific-controls/pv-label) — Single value display
+- [TemplateRepeater](/docs/components/scientific-controls/template-repeater) — Repeat arbitrary widget groups per PV

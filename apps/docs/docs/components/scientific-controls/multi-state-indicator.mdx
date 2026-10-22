@@ -1,0 +1,107 @@
+---
+title: MultiStateIndicator
+sidebar_position: 4
+---
+
+# MultiStateIndicator
+
+A colored indicator that reflects one of N defined states. Each state maps to a label, color, and optional icon. Used for device status (on/off/fault), operational modes, and enumerated PV values.
+
+Inspired by [PyDMMultiStateIndicator](https://slaclab.github.io/pydm/widgets/multistate.html).
+
+## Usage
+
+```tsx
+import { MultiStateIndicator } from '@swapps/controls';
+
+{/* Basic — device status */}
+<MultiStateIndicator
+  value={2}
+  states={[
+    { value: 0, label: 'Off', color: '#525252' },
+    { value: 1, label: 'Standby', color: '#f1c21b' },
+    { value: 2, label: 'Running', color: '#24a148' },
+    { value: 3, label: 'Fault', color: '#da1e28' },
+  ]}
+/>
+
+{/* Valve state with shape variants */}
+<MultiStateIndicator
+  value={valveStatus}
+  states={[
+    { value: 0, label: 'Closed', color: '#da1e28' },
+    { value: 1, label: 'Open', color: '#24a148' },
+    { value: 2, label: 'Moving', color: '#f1c21b' },
+  ]}
+  shape="circle"
+  showLabel
+/>
+
+{/* Compact mode for dense layouts */}
+<MultiStateIndicator
+  value={interlockState}
+  states={[
+    { value: 0, label: 'OK', color: '#24a148' },
+    { value: 1, label: 'Tripped', color: '#da1e28' },
+  ]}
+  size="sm"
+/>
+```
+
+## Shapes
+
+The indicator can render as different shapes to distinguish categories of status:
+
+| Shape | Use case |
+|---|---|
+| `rectangle` (default) | General-purpose status display |
+| `circle` | Device on/off, valve open/closed |
+| `badge` | Inline status in tables or lists |
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `number \| string` | — | Current state value, matched against `states[].value`. |
+| `states` | `StateDefinition[]` | **(required)** | Array of possible states. See below. |
+| `shape` | `'rectangle' \| 'circle' \| 'badge'` | `'rectangle'` | Indicator shape. |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Indicator size. |
+| `showLabel` | `boolean` | `true` | Display the state label next to the indicator. |
+| `alarmSeverity` | `AlarmSeverity` | `'none'` | Alarm state. Adds a severity border around the indicator. |
+| `connected` | `boolean` | `true` | Whether the PV connection is active. |
+| `className` | `string` | — | Additional CSS class. |
+
+### StateDefinition
+
+```ts
+interface StateDefinition {
+  value: number | string;
+  label: string;
+  color: string;
+  icon?: React.ReactNode;
+}
+```
+
+## Unmatched values
+
+If the current `value` does not match any entry in `states`, the indicator renders in a neutral grey with the label "Unknown" (or `value.toString()` if a number). This prevents blank indicators when a device enters an unexpected state.
+
+## Accessibility
+
+- Uses `role="status"` with `aria-label` describing the current state name.
+- State is conveyed through label text in addition to color.
+- When `connected` is `false`, announces the disconnected state.
+
+## PyDM equivalent
+
+Replaces `PyDMMultiStateIndicator`. Key differences:
+
+- States are defined as a prop array instead of a designer-configured map.
+- Supports shape variants (`circle`, `badge`) for different layout contexts.
+- Unknown/unmatched values display gracefully instead of showing a blank indicator.
+
+## Related
+
+- [ByteIndicator](/docs/components/scientific-controls/byte-indicator) — Bit-level status
+- [PVSymbol](/docs/components/scientific-controls/pv-symbol) — SVG icon that changes with state
+- [PVLabel](/docs/components/scientific-controls/pv-label) — Text readback

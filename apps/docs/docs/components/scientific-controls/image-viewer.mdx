@@ -1,0 +1,113 @@
+---
+title: ImageViewer
+sidebar_position: 7
+---
+
+# ImageViewer
+
+Displays 2D array data or camera images with configurable color maps, zoom, and region-of-interest selection. Used for beam profile monitors, area detectors, and any imaging PV that provides a 2D array.
+
+Inspired by [PyDMImageView](https://slaclab.github.io/pydm/widgets/image_view.html).
+
+## Usage
+
+```tsx
+import { ImageViewer } from '@swapps/controls';
+
+{/* Basic — display a 2D array with a color map */}
+<ImageViewer
+  data={cameraImage}
+  width={1024}
+  height={768}
+  colorMap="viridis"
+/>
+
+{/* With intensity range and crosshair */}
+<ImageViewer
+  data={beamProfileData}
+  width={640}
+  height={480}
+  colorMap="inferno"
+  intensityRange={[0, 4095]}
+  showCrosshair
+  showColorBar
+/>
+
+{/* Zoomable with region-of-interest */}
+<ImageViewer
+  data={detectorImage}
+  width={2048}
+  height={2048}
+  colorMap="grey"
+  enableZoom
+  enableROI
+  onROISelect={(roi) => analyzeRegion(roi)}
+/>
+```
+
+## Color maps
+
+ImageViewer supports standard scientific color maps:
+
+| Name | Use case |
+|---|---|
+| `grey` | Raw intensity, general purpose |
+| `viridis` | Perceptually uniform, colorblind-safe |
+| `inferno` | High-contrast hot-body radiation |
+| `plasma` | Alternative high-contrast |
+| `jet` | Legacy compatibility (not recommended for new displays) |
+
+Custom color maps can be provided as a 256-entry RGB array.
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `data` | `number[] \| Float32Array \| Uint16Array` | — | Flat array of pixel values (row-major). |
+| `width` | `number` | **(required)** | Image width in pixels. |
+| `height` | `number` | **(required)** | Image height in pixels. |
+| `colorMap` | `string \| number[][]` | `'viridis'` | Named color map or custom RGB lookup table. |
+| `intensityRange` | `[number, number]` | auto | Min/max intensity for color mapping. Auto-scales if omitted. |
+| `showColorBar` | `boolean` | `false` | Display a color bar legend alongside the image. |
+| `showCrosshair` | `boolean` | `false` | Display crosshairs at the image center or cursor position. |
+| `enableZoom` | `boolean` | `false` | Allow scroll-to-zoom and pan. |
+| `enableROI` | `boolean` | `false` | Allow click-and-drag to select a region of interest. |
+| `onROISelect` | `(roi: ROI) => void` | — | Callback when a region is selected. |
+| `maxFps` | `number` | `30` | Frame rate cap for live-updating images. |
+| `alarmSeverity` | `AlarmSeverity` | `'none'` | Alarm state. Adds a severity border. |
+| `connected` | `boolean` | `true` | Whether the PV connection is active. |
+| `className` | `string` | — | Additional CSS class. |
+
+### ROI
+
+```ts
+interface ROI {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+}
+```
+
+## Rendering
+
+ImageViewer uses a Canvas element for performance. A 2048×2048 image at 10 Hz requires efficient rendering — DOM-based approaches are not viable at this data volume. The canvas is styled to fit its container and maintains aspect ratio.
+
+## Accessibility
+
+- The canvas includes a text fallback describing the image dimensions and current intensity range.
+- Zoom and ROI interactions are keyboard-accessible.
+- Alarm state is conveyed via a border and ARIA attributes.
+
+## PyDM equivalent
+
+Replaces `PyDMImageView`. Key differences:
+
+- Renders on HTML Canvas rather than a Qt widget, enabling browser-native zoom and export.
+- Color map is a prop rather than a toolbar selection (though a toolbar can be composed around it).
+- Supports a callback-based ROI workflow for integration with analysis tools.
+
+## Related
+
+- [PVLabel](/docs/components/scientific-controls/pv-label) — Scalar value readback
+- [ScaleIndicator](/docs/components/scientific-controls/scale-indicator) — 1D value as gauge

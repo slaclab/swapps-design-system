@@ -1,0 +1,103 @@
+---
+title: TemplateRepeater
+sidebar_position: 10
+---
+
+# TemplateRepeater
+
+Repeats a render template for each item in a data array, generating uniform widget groups from a single definition. Used for displaying rows of identical device panels — magnet arrays, BPM chains, vacuum sector overviews — where each instance differs only by PV prefix or device name.
+
+Inspired by [PyDMTemplateRepeater](https://slaclab.github.io/pydm/widgets/template_repeater.html).
+
+## Usage
+
+```tsx
+import { TemplateRepeater } from '@swapps/controls';
+import { PVLabel, ScaleIndicator } from '@swapps/controls';
+
+{/* Basic — repeat a label for each device */}
+<TemplateRepeater
+  data={[
+    { device: 'QUAD:LI21:201', label: 'Quad 1' },
+    { device: 'QUAD:LI21:301', label: 'Quad 2' },
+    { device: 'QUAD:LI21:401', label: 'Quad 3' },
+  ]}
+  renderItem={(item) => (
+    <div className="device-row">
+      <span>{item.label}</span>
+      <PVLabel value={item.readback} units="kG" />
+      <ScaleIndicator value={item.readback} min={0} max={10} />
+    </div>
+  )}
+/>
+
+{/* Grid layout */}
+<TemplateRepeater
+  data={vacuumSectors}
+  layout="grid"
+  columns={3}
+  renderItem={(sector) => (
+    <VacuumSectorPanel
+      name={sector.name}
+      pressurePV={sector.pressurePV}
+      valvePV={sector.valvePV}
+    />
+  )}
+/>
+
+{/* With loading and empty states */}
+<TemplateRepeater
+  data={deviceList}
+  renderItem={(device) => <DeviceCard device={device} />}
+  loading={isLoading}
+  emptyMessage="No devices configured for this sector."
+/>
+```
+
+## Layout modes
+
+| Mode | Behavior |
+|---|---|
+| `list` (default) | Items stack vertically with consistent spacing. |
+| `grid` | Items arrange in a CSS grid. Set `columns` to control the grid. |
+| `horizontal` | Items flow horizontally and wrap. |
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `data` | `T[]` | **(required)** | Array of items to repeat over. |
+| `renderItem` | `(item: T, index: number) => ReactNode` | **(required)** | Render function called for each item. |
+| `layout` | `'list' \| 'grid' \| 'horizontal'` | `'list'` | How repeated items are arranged. |
+| `columns` | `number` | `3` | Column count for grid layout. |
+| `gap` | `number \| string` | `'1rem'` | Spacing between items. |
+| `loading` | `boolean` | `false` | Show skeleton placeholders instead of content. |
+| `emptyMessage` | `string \| ReactNode` | — | Content shown when `data` is an empty array. |
+| `keyExtractor` | `(item: T, index: number) => string` | — | Custom key function. Falls back to `item.id` or index. |
+| `className` | `string` | — | Additional CSS class for the container. |
+
+## Performance
+
+TemplateRepeater renders all items by default. For large lists (100+ items), it supports:
+
+- **Virtualization** — Set `virtualize` to only render items in the viewport. Requires a fixed `itemHeight`.
+- **Keyed updates** — Provide `keyExtractor` so React can efficiently reconcile when items are added, removed, or reordered.
+
+## Accessibility
+
+- The container uses `role="list"` and each repeated item uses `role="listitem"`.
+- Empty and loading states are announced to screen readers.
+
+## PyDM equivalent
+
+Replaces `PyDMTemplateRepeater`. Key differences:
+
+- Uses a render function instead of a `.ui` template file.
+- Supports grid and horizontal layouts in addition to vertical stacking.
+- Built-in loading and empty states.
+- Macro substitution is handled by the render function's access to item data, rather than a string-replacement system.
+
+## Related
+
+- [EmbeddedDisplay](/docs/components/scientific-controls/embedded-display) — Load a single sub-display by path
+- [PVTable](/docs/components/scientific-controls/pv-table) — Tabular PV display when a table layout is more appropriate

@@ -1,0 +1,106 @@
+---
+title: ScaleIndicator
+sidebar_position: 3
+---
+
+# ScaleIndicator
+
+A linear gauge that shows a numeric value within a defined range, with optional alarm-threshold bands. Used for at-a-glance monitoring of temperatures, pressures, currents, and other continuous measurements.
+
+Inspired by [PyDMScaleIndicator](https://slaclab.github.io/pydm/widgets/scale.html).
+
+## Usage
+
+```tsx
+import { ScaleIndicator } from '@swapps/controls';
+
+{/* Basic — value within a range */}
+<ScaleIndicator value={72.5} min={0} max={100} units="°C" />
+
+{/* With alarm thresholds */}
+<ScaleIndicator
+  value={pressureReading}
+  min={0}
+  max={1e-6}
+  units="Torr"
+  thresholds={{
+    lolo: 0,
+    low: 1e-9,
+    high: 5e-7,
+    hihi: 8e-7,
+  }}
+  alarmSeverity="minor"
+/>
+
+{/* Vertical orientation */}
+<ScaleIndicator
+  value={tankLevel}
+  min={0}
+  max={500}
+  units="L"
+  orientation="vertical"
+  showValue
+/>
+```
+
+## Threshold bands
+
+When `thresholds` are provided, the gauge background renders colored bands:
+
+| Range | Color | Meaning |
+|---|---|---|
+| Below `lolo` | Major alarm (red) | Far below operating range |
+| `lolo` to `low` | Minor alarm (yellow) | Below normal |
+| `low` to `high` | Normal (green) | Within operating range |
+| `high` to `hihi` | Minor alarm (yellow) | Above normal |
+| Above `hihi` | Major alarm (red) | Far above operating range |
+
+Threshold bands are visual indicators. The actual alarm state is still determined by the `alarmSeverity` prop from the control system.
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `number` | — | Current value to display on the gauge. |
+| `min` | `number` | `0` | Minimum value (left/bottom of scale). |
+| `max` | `number` | `100` | Maximum value (right/top of scale). |
+| `units` | `string` | — | Engineering units label. |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Gauge direction. |
+| `showValue` | `boolean` | `true` | Display the numeric value alongside the bar. |
+| `showTicks` | `boolean` | `true` | Display tick marks along the scale. |
+| `tickCount` | `number` | `5` | Number of labeled ticks along the scale. |
+| `thresholds` | `ThresholdConfig` | — | Alarm threshold boundaries. See below. |
+| `fillColor` | `string` | — | Override the bar fill color. Defaults to the alarm-severity color. |
+| `alarmSeverity` | `AlarmSeverity` | `'none'` | Current alarm state. Drives bar and border color. |
+| `connected` | `boolean` | `true` | Whether the PV connection is active. |
+| `className` | `string` | — | Additional CSS class. |
+
+### ThresholdConfig
+
+```ts
+interface ThresholdConfig {
+  lolo?: number;
+  low?: number;
+  high?: number;
+  hihi?: number;
+}
+```
+
+## Accessibility
+
+- Uses `role="meter"` with `aria-valuenow`, `aria-valuemin`, and `aria-valuemax`.
+- Alarm state is announced via `aria-label`, not conveyed by color alone.
+- Threshold regions include accessible descriptions when focused.
+
+## PyDM equivalent
+
+Replaces `PyDMScaleIndicator`. Key differences:
+
+- Threshold colors derive from the SWAPPS alarm token system.
+- Tick formatting uses the shared display format utilities.
+- Supports both horizontal and vertical via a prop.
+
+## Related
+
+- [AnalogGauge](/docs/components/scientific-controls/analog-gauge) — Radial gauge variant
+- [PVLabel](/docs/components/scientific-controls/pv-label) — Numeric readback

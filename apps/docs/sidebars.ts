@@ -27,6 +27,7 @@ const sidebars: SidebarsConfig = {
       label: "Components",
       link: { type: "doc", id: "components/overview" },
       items: [
+        "components/carbon-primitives",
         {
           type: "category",
           label: "General UI",
@@ -36,7 +37,23 @@ const sidebars: SidebarsConfig = {
             "components/general-ui/app-shell",
           ],
         },
-        "components/carbon-primitives",
+        {
+          type: "category",
+          label: "Scientific Controls",
+          link: { type: "doc", id: "components/scientific-controls/index" },
+          items: [
+            "components/scientific-controls/pv-label",
+            "components/scientific-controls/byte-indicator",
+            "components/scientific-controls/scale-indicator",
+            "components/scientific-controls/multi-state-indicator",
+            "components/scientific-controls/pv-symbol",
+            "components/scientific-controls/analog-gauge",
+            "components/scientific-controls/image-viewer",
+            "components/scientific-controls/pv-table",
+            "components/scientific-controls/embedded-display",
+            "components/scientific-controls/template-repeater",
+          ],
+        },
       ],
     },
     {
