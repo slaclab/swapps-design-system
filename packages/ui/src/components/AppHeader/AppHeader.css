@@ -1,0 +1,26 @@
+.swapps-header__logo {
+  display: flex;
+  align-items: center;
+  padding: 0 0.5rem;
+}
+
+.swapps-header__logo-img {
+  display: block;
+  height: 20px;
+  width: auto;
+}
+
+.swapps-header__search {
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+}
+
+.swapps-header__action-label {
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.swapps-header__action--primary {
+  font-weight: 600;
+}
