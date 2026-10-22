@@ -1,0 +1,286 @@
+---
+sidebar_position: 2
+title: Application Header
+---
+
+import AppHeaderPlayground from '@site/src/components/playgrounds/AppHeaderPlayground';
+
+# Application Header
+
+A standardized, configurable application header built on IBM Carbon's UI Shell. It provides consistent application identity, navigation, and commonly used utilities across SWAPPS applications.
+
+The header supports lab-specific branding while maintaining a shared layout, interaction patterns, and light/dark theme support.
+
+## Interactive preview
+
+The preview below uses the **global preview configuration** from the [Themes](/docs/themes/overview) page. Change the organization or appearance there and return here to see the header update.
+
+Toggle individual regions and utilities using the controls below to explore the header's anatomy.
+
+<AppHeaderPlayground />
+
+## Anatomy
+
+The header is organized into three primary regions, rendered left to right.
+
+### 1. Application identity — Left
+
+| Element | Description |
+|---|---|
+| Organization prefix | Displays the laboratory or organization name (e.g., **SLAC**). Inherited from the theme provider or set explicitly via `orgName`. |
+| Application title | The application's name (e.g., **E-Log**). Always required. |
+| Search | Optional application-wide search functionality, passed as a React node. |
+
+The organization prefix and application title are displayed together using Carbon's `HeaderName` component. The prefix appears in brackets (e.g., `[SLAC]`).
+
+### 2. Application navigation and actions — Center/Right
+
+| Element | Description |
+|---|---|
+| Navigation | Optional horizontal navigation links (e.g., Dashboard, Data, Settings). |
+| Admin | Optional navigation to an administrative interface, shown only when configured and `visible` is not `false`. |
+| Application actions | Optional, application-specific actions such as **Drafts** or **New Entry**. Configured by the consuming application, not hardcoded. |
+
+### 3. Global utilities — Right
+
+Common application utilities are positioned on the right side of the header:
+
+| Utility | Behavior |
+|---|---|
+| Theme toggle | Switch between light and dark appearance. Built into the component — automatically toggles the theme context when enabled. |
+| Report bug | Open a bug-reporting form or configured issue tracker. |
+| Help / Documentation | Open application documentation or a help resource. |
+| Account | Display account information and available user actions. |
+
+Utilities only appear when configured. Each renders as a Carbon `HeaderGlobalAction` icon button with an accessible label and tooltip.
+
+## Installation
+
+```bash
+npm install @swapps/ui
+```
+
+Ensure Carbon styles are loaded in your application:
+
+```tsx
+import '@carbon/react/es/styles.css';
+```
+
+## Usage
+
+### Basic
+
+```tsx
+import { AppHeader } from '@swapps/ui';
+
+function App() {
+  return (
+    <AppHeader
+      appTitle="Experiment Tracker"
+      navigation={[
+        { label: 'Dashboard', href: '/dashboard' },
+        { label: 'Experiments', href: '/experiments' },
+      ]}
+    />
+  );
+}
+```
+
+### With theme provider
+
+When wrapped in a `SWAPPSThemeProvider`, `AppHeader` automatically inherits the organization name, logo, and appearance. Explicit props override the theme context.
+
+```tsx
+import { SWAPPSThemeProvider, AppHeader } from '@swapps/ui';
+
+function App() {
+  return (
+    <SWAPPSThemeProvider
+      config={{
+        appearance: 'dark',
+        branding: {
+          organizationName: 'SLAC',
+          logoUrl: '/slac-logo.svg',
+          primaryColor: '#8c1515',
+        },
+      }}
+    >
+      <AppHeader appTitle="Beam Status" />
+    </SWAPPSThemeProvider>
+  );
+}
+```
+
+### Full configuration
+
+This example shows all three header regions populated, matching the E-Log application pattern:
+
+```tsx
+import { AppHeader } from '@swapps/ui';
+import { Search } from '@carbon/react';
+
+function App() {
+  return (
+    <AppHeader
+      orgName="SLAC"
+      appTitle="E-Log"
+      search={
+        <Search
+          size="lg"
+          placeholder="Search entries..."
+          labelText="Search"
+          closeButtonLabelText="Clear search"
+        />
+      }
+      admin={{
+        label: "Admin",
+        href: "/admin",
+        visible: canAccessAdmin,
+      }}
+      actions={[
+        { label: "Drafts", href: "/drafts" },
+        { label: "New Entry", href: "/new", primary: true },
+      ]}
+      utilities={{
+        themeToggle: true,
+        reportBug: { onClick: openBugReport },
+        help: { href: "/docs" },
+        account: { onClick: openAccountMenu },
+      }}
+    />
+  );
+}
+```
+
+:::note
+`canAccessAdmin` must come from actual authorization state. Permissions must be enforced server-side — the `visible` flag only controls whether the link appears in the UI.
+:::
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `appTitle` | `string` | **(required)** | Application title displayed in the header. |
+| `orgName` | `string` | — | Organization or laboratory name, shown as a prefix. Falls back to `SWAPPSThemeProvider` branding. |
+| `navigation` | `NavigationItem[]` | `[]` | Horizontal navigation links in the header bar. |
+| `homeHref` | `string` | `"/"` | URL for the header title link. |
+| `logo` | `ReactNode` | — | Optional logo element before the header name. Falls back to theme `logoUrl`. |
+| `search` | `ReactNode` | — | Optional search element rendered after the application title. |
+| `admin` | `AdminConfig` | — | Optional admin link configuration. See below. |
+| `actions` | `ActionItem[]` | `[]` | Application-specific action buttons in the global bar. |
+| `utilities` | `UtilityConfig` | — | Standardized utility controls (theme, bug, help, account). See below. |
+| `globalActions` | `ReactNode` | — | Custom elements rendered after utilities for cases not covered by the structured props. |
+| `skipToContentLabel` | `string` | `"Skip to main content"` | Accessible label for the skip link. |
+| `aria-label` | `string` | Auto-generated | Accessible label for the header landmark. |
+
+### NavigationItem
+
+```ts
+interface NavigationItem {
+  label: string;
+  href: string;
+}
+```
+
+### AdminConfig
+
+```ts
+interface AdminConfig {
+  label?: string;       // Default: "Admin"
+  href: string;
+  visible?: boolean;    // Default: true
+}
+```
+
+### ActionItem
+
+```ts
+interface ActionItem {
+  label: string;
+  href?: string;
+  onClick?: () => void;
+  primary?: boolean;     // Applies emphasis styling
+}
+```
+
+### UtilityConfig
+
+```ts
+interface UtilityConfig {
+  themeToggle?: boolean;
+  reportBug?: { onClick: () => void; label?: string };
+  help?: { href?: string; onClick?: () => void; label?: string };
+  account?: { onClick: () => void; label?: string };
+}
+```
+
+## Customization
+
+Applications configure the header with their own organization name, application title, logo, navigation, actions, and available utilities.
+
+### Lab branding
+
+Lab branding affects application identity and designated brand accents, not functional or semantic status colors. The header inherits light/dark appearance from the shared application theme.
+
+### Prop vs. context priority
+
+Explicit props always take precedence over theme context values:
+
+```tsx
+<SWAPPSThemeProvider config={{ branding: { organizationName: 'Fermilab' } }}>
+  <AppHeader orgName="SLAC" appTitle="My App" />
+  {/* Displays [SLAC], not [Fermilab] */}
+</SWAPPSThemeProvider>
+```
+
+### Utility targets
+
+The header standardizes **where** the bug-reporting and documentation buttons appear, but each consuming application decides **where those buttons lead**. For example, E-Log can link its bug icon to its own issue-report form, while another SWAPPS application links to a different issue tracker.
+
+This standardizes the user experience without making unrelated applications share the same business logic.
+
+## Design principles
+
+- Maintain a consistent header structure across applications.
+- Keep organization identity and application identity clearly distinguishable.
+- Place persistent application identity on the left and utilities on the right.
+- Provide application-specific actions without disrupting common utility placement.
+- Avoid displaying unavailable features or unauthorized navigation.
+- Keep the header responsive and keyboard accessible.
+- Use Carbon's established UI Shell patterns wherever possible.
+
+## Accessibility
+
+- Includes a **skip-to-content** link as the first focusable element.
+- Uses Carbon's `Header` component, which renders a `<header>` landmark with an `aria-label`.
+- Navigation renders in a `<nav>` element with an accessible label.
+- All navigation items and utility buttons are keyboard-accessible.
+- Utility icons include accessible labels and tooltips via Carbon's `HeaderGlobalAction`.
+- Brand color contrast is validated when configured through the theme system.
+
+## Built on Carbon
+
+`AppHeader` wraps Carbon's [UI Shell](https://react.carbondesignsystem.com/?path=/story/components-ui-shell--header-base) components:
+
+- `Header`
+- `HeaderName`
+- `HeaderNavigation`
+- `HeaderMenuItem`
+- `HeaderGlobalBar`
+- `HeaderGlobalAction`
+- `SkipToContent`
+
+Utility icons are from `@carbon/icons-react`: `Light`, `Asleep`, `Debug`, `Help`, `UserAvatar`, and `Settings`.
+
+## Known limitations
+
+- **Mobile responsiveness** — The header does not yet include a hamburger menu for mobile viewports. This is planned.
+- **Active nav state** — Navigation items do not currently indicate the active page. This requires router integration.
+- **Sub-menus** — Dropdown sub-navigation is not yet supported.
+- **Header panels** — Expandable right-side panels (e.g., for notifications or account details) are not yet implemented.
+
+## Related
+
+- [Themes overview](/docs/themes/overview) — Configure the global preview theme
+- [Navigation](/docs/patterns/navigation)
+- [AppShell](/docs/components/general-ui/app-shell)

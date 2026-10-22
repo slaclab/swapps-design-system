@@ -1,41 +1,79 @@
 ---
-sidebar_position: 1
+sidebar_position: 0
 title: Overview
 ---
 
+import Link from '@docusaurus/Link';
+import PackageThumb from '@site/src/components/PackageCardThumbnail';
+
 # Components
 
-The SWAPPS Design System provides reusable application-level components built on IBM Carbon.
+<div className="swapps-package-directory">
 
-## Component categories
+<div className="swapps-package-directory__card">
+<div className="swapps-package-directory__thumb">
+<PackageThumb id="general-ui" />
+</div>
+<div className="swapps-package-directory__body">
+<div className="swapps-package-directory__header">
+<h2>General UI</h2>
+<span className="swapps-component-card__badge swapps-component-card__badge--available">Available</span>
+</div>
 
-### SWAPPS components
+`@swapps/ui`
 
-These components address patterns that go beyond individual UI elements. They standardize how applications are structured:
+Application-level components with organization branding and light/dark mode support.
 
-| Component | Status | Description |
-|---|---|---|
-| [AppHeader](/docs/components/app-header) | **Available** | Configurable application header with organization branding |
-| Navigation | Planned | Application-level navigation patterns |
-| AppShell | Planned | Combined header, navigation, and content layout |
+<div className="swapps-package-directory__components">
+<strong>Includes:</strong> AppHeader · Navigation <em>(planned)</em> · App Shell <em>(planned)</em>
+</div>
 
-### Carbon components
+<Link className="button button--primary button--sm" to="/docs/components/general-ui">
+Explore General UI →
+</Link>
+</div>
+</div>
 
-For foundational UI primitives, use [IBM Carbon](https://carbondesignsystem.com/components/overview/) directly:
+<div className="swapps-package-directory__card swapps-package-directory__card--planned">
+<div className="swapps-package-directory__thumb">
+<PackageThumb id="controls" />
+</div>
+<div className="swapps-package-directory__body">
+<div className="swapps-package-directory__header">
+<h2>Scientific Controls</h2>
+<span className="swapps-component-card__badge swapps-component-card__badge--planned">Planned</span>
+</div>
 
-| Component | Carbon package |
-|---|---|
-| Buttons | `@carbon/react` — `Button` |
-| Text inputs | `@carbon/react` — `TextInput` |
-| Data tables | `@carbon/react` — `DataTable` |
-| Modals | `@carbon/react` — `Modal` |
-| Notifications | `@carbon/react` — `InlineNotification`, `ToastNotification` |
-| Dropdowns | `@carbon/react` — `Dropdown` |
+`@swapps/controls`
 
-See the [Carbon React documentation](https://react.carbondesignsystem.com/) for the full component catalog.
+Status indicators, setpoint controls, and alarm panels.
 
-## Design decisions
+<div className="swapps-package-directory__components">
+<strong>Planned:</strong> Status displays · Setpoint controls · Alarm panels
+</div>
+</div>
+</div>
 
-- **Build on Carbon** — Don't recreate buttons, inputs, or other primitives.
-- **Focus on application patterns** — Headers, navigation, and layout shells are where cross-application consistency matters most.
-- **Keep APIs configurable** — Components accept organization-specific values through props, not through code changes.
+<div className="swapps-package-directory__card swapps-package-directory__card--planned">
+<div className="swapps-package-directory__thumb">
+<PackageThumb id="charts" />
+</div>
+<div className="swapps-package-directory__body">
+<div className="swapps-package-directory__header">
+<h2>Charts &amp; Visualization</h2>
+<span className="swapps-component-card__badge swapps-component-card__badge--planned">Planned</span>
+</div>
+
+`@swapps/charts`
+
+Time-series plots, trend charts, and dashboards.
+
+<div className="swapps-package-directory__components">
+<strong>Planned:</strong> Time-series plots · Trend charts · Dashboards
+</div>
+</div>
+</div>
+
+</div>
+
+All SWAPPS components are built on [IBM Carbon](https://carbondesignsystem.com/). For standard UI primitives (buttons, forms, tables, dialogs, notifications), use Carbon directly — see the [Carbon integration guide](/docs/development/carbon-integration).

@@ -3,7 +3,7 @@ sidebar_position: 4
 title: Styling
 ---
 
-# Styling conventions
+# Styling Conventions
 
 ## Use Carbon tokens
 
@@ -38,6 +38,92 @@ The current approach uses plain CSS/Sass classes. CSS-in-JS libraries are not us
 
 The UI package includes `sass` as a dev dependency for compiling Carbon styles during development and testing. Consumer applications need their own Sass setup if they use Sass imports rather than pre-compiled CSS.
 
+## SWAPPS theme tokens
+
+In addition to Carbon tokens, the design system defines CSS custom properties for three purposes:
+
+### Brand tokens (general UI only)
+
+```css
+var(--swapps-brand-primary)   /* Organization's primary color */
+var(--swapps-brand-accent)    /* Organization's accent color */
+```
+
+These are set by `SWAPPSThemeProvider` and should only be used in general UI components (headers, navigation, toolbars). Always provide a safe fallback:
+
+```css
+.swapps-branded-element {
+  background-color: var(--swapps-brand-primary, transparent);
+}
+```
+
+### Status tokens (controls and indicators)
+
+```css
+var(--swapps-status-normal)
+var(--swapps-status-warning)
+var(--swapps-status-error)
+var(--swapps-status-critical)
+var(--swapps-status-disabled)
+var(--swapps-status-disconnected)
+var(--swapps-status-unknown)
+```
+
+These are fixed by the design system and are **not affected by branding**. Use them for functional states in scientific controls and equipment indicators.
+
+### Visualization tokens (charts)
+
+```css
+var(--swapps-viz-series-1) through var(--swapps-viz-series-8)
+```
+
+Chart series colors selected for readability, differentiation, and accessibility. Not derived from branding.
+
+## Writing theme-aware components
+
+### General UI components
+
+These may consume branding. Use the `useSWAPPSBranding()` hook:
+
+```tsx
+import { useSWAPPSBranding } from '@swapps/ui';
+
+function MyBrandedToolbar() {
+  const { organizationName, primaryColor } = useSWAPPSBranding();
+  // Use branding values for display
+}
+```
+
+### Scientific controls
+
+These should **not** consume branding. Use Carbon tokens and `--swapps-status-*` tokens:
+
+```css
+.swapps-status-indicator--normal {
+  background-color: var(--swapps-status-normal);
+}
+
+.swapps-status-indicator--error {
+  background-color: var(--swapps-status-error);
+}
+```
+
+Do not import `useSWAPPSBranding()` in control components.
+
+### Charts and visualizations
+
+Use `--swapps-viz-series-*` tokens for data series and Carbon tokens for backgrounds, axes, and labels. Do not use brand colors for data representation.
+
+## Determining whether branding is appropriate
+
+Ask these questions when building a new component:
+
+1. **Does this component represent organization identity?** (header, footer, branding area) → Use brand tokens.
+2. **Does this component convey functional/operational meaning?** (status indicator, alarm, control value) → Use semantic status tokens only.
+3. **Does this component display data?** (chart, plot, table with data series) → Use visualization palette tokens.
+
+When in doubt, do not use brand tokens. Functional clarity is more important than visual branding.
+
 ## Avoiding style conflicts
 
 When embedding SWAPPS/Carbon components in other environments (like the Docusaurus documentation site), use a scoped container class to isolate styles:
@@ -46,4 +132,38 @@ When embedding SWAPPS/Carbon components in other environments (like the Docusaur
 .swapps-preview__content {
   /* Contains Carbon-styled components without affecting the host page */
 }
+```
+
+## Writing theme-aware tests
+
+Test that your component:
+
+1. Renders correctly in both light and dark appearance.
+2. Does not derive functional colors from branding (for controls/charts).
+3. Falls back safely when no theme provider is present.
+
+```tsx
+import { SWAPPSThemeProvider } from '@swapps/ui';
+
+// Test with light mode
+render(
+  <SWAPPSThemeProvider config={{ appearance: 'light', branding: { organizationName: '' } }}>
+    <MyComponent />
+  </SWAPPSThemeProvider>
+);
+
+// Test with dark mode
+render(
+  <SWAPPSThemeProvider config={{ appearance: 'dark', branding: { organizationName: '' } }}>
+    <MyComponent />
+  </SWAPPSThemeProvider>
+);
+
+// Test that branding changes don't affect functional controls
+render(
+  <SWAPPSThemeProvider config={{ appearance: 'light', branding: { organizationName: 'Test Lab', primaryColor: '#ff0000' } }}>
+    <MyControlComponent />
+  </SWAPPSThemeProvider>
+);
+// Assert: control colors remain semantic, not branded
 ```

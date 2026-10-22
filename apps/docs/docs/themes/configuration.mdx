@@ -3,66 +3,169 @@ sidebar_position: 2
 title: Configuration
 ---
 
-# Theme configuration
+# Theme Configuration
 
-## Current approach
+## SWAPPSThemeProvider
 
-Today, theming is handled through two mechanisms:
-
-### 1. Carbon theme selection
-
-Choose a Carbon theme for your application's light or dark appearance:
+The `SWAPPSThemeProvider` is the primary way to configure theming in a SWAPPS application. Wrap your application root with it to establish appearance and branding for all child components.
 
 ```tsx
-import { Theme } from '@carbon/react';
+import { SWAPPSThemeProvider } from '@swapps/ui';
+import type { SWAPPSThemeConfig } from '@swapps/ui';
+
+const themeConfig: SWAPPSThemeConfig = {
+  appearance: 'dark',
+  branding: {
+    organizationName: 'SLAC',
+    logoUrl: '/slac-logo.svg',
+    primaryColor: '#8c1515',
+    accentColor: '#b83a4b',
+  },
+};
 
 function App() {
-  const [isDark, setIsDark] = useState(false);
-
   return (
-    <Theme theme={isDark ? 'g100' : 'white'}>
-      <AppHeader appTitle="My App" orgName="SLAC" />
-      <Content>
-        {/* Application content */}
-      </Content>
-    </Theme>
+    <SWAPPSThemeProvider config={themeConfig}>
+      <AppHeader appTitle="Beam Status" />
+      {/* All child components inherit the theme */}
+    </SWAPPSThemeProvider>
   );
 }
 ```
 
-### 2. Component props
+## Configuration schema
 
-Pass organization-specific values directly to components:
+```ts
+interface SWAPPSThemeConfig {
+  /** Light or dark mode */
+  appearance: 'light' | 'dark';
 
-```tsx
-<AppHeader
-  orgName="SLAC"
-  appTitle="Experiment Dashboard"
-  logo={<img src="/slac-logo.svg" alt="SLAC" height={20} />}
-  navItems={[
-    { label: 'Home', href: '/' },
-    { label: 'Data', href: '/data' },
-  ]}
-/>
+  /** Organization identity and brand colors */
+  branding: {
+    /** Organization or laboratory name */
+    organizationName: string;
+    /** URL to the organization's logo */
+    logoUrl?: string;
+    /** Primary brand color (hex, e.g., '#0043ce') */
+    primaryColor?: string;
+    /** Secondary/accent brand color (hex) */
+    accentColor?: string;
+  };
+}
 ```
 
-## Available Carbon themes
+### Defaults
 
-| Theme | Description |
-|---|---|
-| `white` | Light theme with white backgrounds |
-| `g10` | Light theme with subtle gray backgrounds |
-| `g90` | Dark theme with dark gray backgrounds |
-| `g100` | Dark theme with near-black backgrounds |
+If no configuration is provided, the system defaults to:
 
-## Future: theme presets
+- Light appearance (`white` Carbon theme)
+- No organization branding
+- Standard Carbon semantic colors
+- Default visualization palette
 
-:::info Planned
-A structured theme preset system is planned that will allow organizations to define a configuration object combining:
+## Appearance
 
-- Organization name and logo
-- Preferred Carbon theme
-- Optional accent color tokens
+The `appearance` property maps to Carbon themes:
 
-This will simplify setup for adopting teams. Design and API are not yet decided.
-:::
+| Appearance | Carbon theme | Description |
+|---|---|---|
+| `'light'` | `white` | Light backgrounds, dark text |
+| `'dark'` | `g100` | Dark backgrounds, light text |
+
+The provider wraps children in Carbon's `Theme` component, so all Carbon tokens automatically adjust.
+
+## Branding
+
+Branding values are available to components through the `useSWAPPSBranding()` hook. Only **general UI components** (like `AppHeader`) consume branding — controls and charts ignore it.
+
+| Property | Used by | Purpose |
+|---|---|---|
+| `organizationName` | `AppHeader`, navigation | Displayed as a label/prefix |
+| `logoUrl` | `AppHeader` | Fallback logo when no `logo` prop is passed |
+| `primaryColor` | General UI components | Applied via `--swapps-brand-primary` CSS variable |
+| `accentColor` | General UI components | Applied via `--swapps-brand-accent` CSS variable |
+
+## Consuming the theme in components
+
+### Using hooks
+
+```tsx
+import { useSWAPPSTheme, useSWAPPSAppearance, useSWAPPSBranding } from '@swapps/ui';
+
+function MyComponent() {
+  // Full theme config + setter
+  const { config, setConfig } = useSWAPPSTheme();
+
+  // Just the appearance
+  const appearance = useSWAPPSAppearance(); // 'light' | 'dark'
+
+  // Just the branding
+  const branding = useSWAPPSBranding();
+  // { organizationName, logoUrl?, primaryColor?, accentColor? }
+}
+```
+
+### Using CSS custom properties
+
+Brand tokens are set as CSS custom properties on the provider's wrapper:
+
+```css
+.my-branded-element {
+  background-color: var(--swapps-brand-primary, transparent);
+  border-color: var(--swapps-brand-accent, transparent);
+}
+```
+
+The fallback to `transparent` ensures that components without branding configuration render normally.
+
+## Carbon theme mapping
+
+The provider automatically selects the appropriate Carbon theme:
+
+```ts
+import { appearanceToCarbonTheme } from '@swapps/ui';
+
+appearanceToCarbonTheme('light');            // 'white'
+appearanceToCarbonTheme('dark');             // 'g100'
+appearanceToCarbonTheme('light', 'raised');  // 'g10'
+appearanceToCarbonTheme('dark', 'raised');   // 'g90'
+```
+
+## Contrast validation
+
+The theme system includes utilities for validating brand color accessibility:
+
+```tsx
+import { isValidHexColor, meetsWCAG_AA, contrastRatio } from '@swapps/ui';
+
+isValidHexColor('#ff0000');              // true
+contrastRatio('#000000', '#ffffff');      // ~21
+meetsWCAG_AA('#ffffff', '#0043ce');       // true (4.5:1 for normal text)
+meetsWCAG_AA('#ffffff', '#0043ce', true); // true (3:1 for large text)
+```
+
+Use these when accepting user-configured brand colors to warn about insufficient contrast.
+
+## Dynamic theming
+
+The provider accepts an `onConfigChange` callback for applications that need dynamic theme switching:
+
+```tsx
+function App() {
+  const [config, setConfig] = useState(defaultConfig);
+
+  return (
+    <SWAPPSThemeProvider config={config} onConfigChange={setConfig}>
+      <ThemeSwitcher />
+      <AppContent />
+    </SWAPPSThemeProvider>
+  );
+}
+```
+
+## Related
+
+- [Themes overview](/docs/themes/overview) — Interactive configurator
+- [Custom themes](/docs/themes/custom-themes) — Branding for other laboratories
+- [Light & dark mode](/docs/foundations/light-dark-mode) — Appearance foundations
+- [Colors](/docs/foundations/colors) — Token reference

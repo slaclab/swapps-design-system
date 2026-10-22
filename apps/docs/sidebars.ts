@@ -7,11 +7,35 @@ const sidebars: SidebarsConfig = {
       label: "Getting Started",
       collapsed: false,
       items: [
-        "getting-started/introduction",
-        "getting-started/installation",
-        "getting-started/usage",
-        "getting-started/adoption-guide",
-        "getting-started/contributing",
+        "getting-started/overview",
+        "getting-started/quick-start",
+        "getting-started/packages",
+      ],
+    },
+    {
+      type: "category",
+      label: "Themes & Branding",
+      collapsed: false,
+      items: [
+        "themes/overview",
+        "themes/configuration",
+        "themes/custom-themes",
+      ],
+    },
+    {
+      type: "category",
+      label: "Components",
+      link: { type: "doc", id: "components/overview" },
+      items: [
+        {
+          type: "category",
+          label: "General UI",
+          link: { type: "doc", id: "components/general-ui/index" },
+          items: [
+            "components/general-ui/app-header",
+            "components/general-ui/app-shell",
+          ],
+        },
       ],
     },
     {
@@ -28,37 +52,12 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: "category",
-      label: "Components",
-      items: [
-        "components/overview",
-        "components/app-header",
-        "components/navigation",
-        "components/app-shell",
-        "components/buttons",
-        "components/forms",
-        "components/data-tables",
-        "components/dialogs",
-        "components/notifications",
-      ],
-    },
-    {
-      type: "category",
       label: "Patterns",
       items: [
-        "patterns/application-layouts",
-        "patterns/navigation-patterns",
+        "patterns/navigation",
         "patterns/loading-states",
         "patterns/empty-states",
         "patterns/error-handling",
-      ],
-    },
-    {
-      type: "category",
-      label: "Themes",
-      items: [
-        "themes/overview",
-        "themes/configuration",
-        "themes/custom-themes",
       ],
     },
     {
@@ -70,6 +69,7 @@ const sidebars: SidebarsConfig = {
         "development/component-development",
         "development/styling",
         "development/versioning",
+        "development/contributing",
       ],
     },
     {

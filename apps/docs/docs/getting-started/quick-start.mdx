@@ -1,0 +1,167 @@
+---
+sidebar_position: 2
+title: Quick Start
+---
+
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import ComponentPreview from '@site/src/components/preview/ComponentPreview';
+import { AppHeader } from '@swapps/ui';
+
+# Quick Start
+
+Get a SWAPPS component running in your React application in three steps.
+
+:::caution Package not yet published
+`@swapps/ui` is not yet published to a package registry. It is currently consumed through the pnpm workspace within the [monorepo](https://github.com/slaclab/swapps-design-system). The install commands below show the intended workflow once the package is published.
+
+To try components now, clone the repository and run `pnpm install && pnpm dev:docs` to explore the documentation site with live previews.
+:::
+
+## 1. Install the package
+
+<Tabs groupId="pkg-manager">
+<TabItem value="npm" label="npm">
+
+```bash
+npm install @swapps/ui
+```
+
+</TabItem>
+<TabItem value="pnpm" label="pnpm">
+
+```bash
+pnpm add @swapps/ui
+```
+
+</TabItem>
+<TabItem value="yarn" label="yarn">
+
+```bash
+yarn add @swapps/ui
+```
+
+</TabItem>
+</Tabs>
+
+## 2. Load Carbon styles
+
+SWAPPS components are built on IBM Carbon and require Carbon's stylesheet. Add this import to your application's entry point:
+
+```tsx title="src/main.tsx"
+import '@carbon/react/es/styles.css';
+```
+
+## 3. Use your first component
+
+Import `AppHeader` and add it to your application:
+
+```tsx title="src/App.tsx"
+import { AppHeader } from '@swapps/ui';
+
+function App() {
+  return (
+    <>
+      <AppHeader
+        orgName="SLAC"
+        appTitle="Experiment Tracker"
+        navItems={[
+          { label: 'Dashboard', href: '/dashboard' },
+          { label: 'Experiments', href: '/experiments' },
+          { label: 'Settings', href: '/settings' },
+        ]}
+      />
+      <main id="main-content">
+        {/* Your application content */}
+      </main>
+    </>
+  );
+}
+```
+
+<ComponentPreview label="Result">
+  <AppHeader
+    orgName="SLAC"
+    appTitle="Experiment Tracker"
+    navItems={[
+      { label: 'Dashboard', href: '#' },
+      { label: 'Experiments', href: '#' },
+      { label: 'Settings', href: '#' },
+    ]}
+  />
+</ComponentPreview>
+
+The `orgName`, `appTitle`, and `navItems` props configure the header for your application and organization. Any lab can use the same component with their own identity — no library changes needed.
+
+---
+
+<details>
+<summary><strong>Prerequisites</strong></summary>
+
+- **Node.js** 20 or later
+- **React** 18 or 19
+- **TypeScript** — declarations ship with the package; no separate `@types` install needed
+
+`@swapps/ui` requires React as a peer dependency. If your project already uses React, no additional installation is needed.
+
+```json
+{
+  "peerDependencies": {
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><strong>Sass setup (optional)</strong></summary>
+
+If your project uses Sass, you can import Carbon styles with Sass instead of the pre-compiled CSS:
+
+```scss
+@use '@carbon/react';
+```
+
+See the [Carbon documentation](https://carbondesignsystem.com/developing/frameworks/react/) for details on Sass configuration.
+
+</details>
+
+<details>
+<summary><strong>Theme provider for app-wide branding</strong></summary>
+
+For applications that need consistent branding across multiple SWAPPS components, wrap your app with `SWAPPSThemeProvider`:
+
+```tsx title="src/App.tsx"
+import { SWAPPSThemeProvider, AppHeader } from '@swapps/ui';
+
+function App() {
+  return (
+    <SWAPPSThemeProvider config={{
+      appearance: 'light',
+      branding: {
+        organizationName: 'Fermilab',
+        primaryColor: '#003366',
+      },
+    }}>
+      <AppHeader appTitle="Beam Monitor" navItems={[
+        { label: 'Status', href: '/status' },
+        { label: 'History', href: '/history' },
+      ]} />
+      <main id="main-content">{/* ... */}</main>
+    </SWAPPSThemeProvider>
+  );
+}
+```
+
+See [Themes & Branding](/docs/themes/overview) for full configuration options.
+
+</details>
+
+## Next steps
+
+- **[AppHeader reference](/docs/components/general-ui/app-header)** — Full API, interactive playground, and examples.
+- **[Choose Your Packages](/docs/getting-started/packages)** — Find the right package for your application.
+- **[Themes & Branding](/docs/themes/overview)** — Configure light/dark mode and organization identity.
+- **[Carbon integration](/docs/development/carbon-integration)** — Use Carbon components directly alongside SWAPPS.

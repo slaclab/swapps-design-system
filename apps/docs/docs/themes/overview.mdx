@@ -3,58 +3,79 @@ sidebar_position: 1
 title: Overview
 ---
 
+import ThemeConfigurator from '@site/src/components/ThemeConfigurator';
+
 # Themes
 
-## Concept
+The SWAPPS Design System separates three independent theming concerns:
 
-The SWAPPS Design System separates three independent concerns:
+1. **Appearance** — Light/dark mode, controlled by Carbon themes.
+2. **Laboratory branding** — Organization name, logo, and brand colors. Applied only to general UI components.
+3. **Functional semantics** — Status colors, control states, and visualization palettes. These are fixed by the design system and are not affected by branding.
 
-1. **Base design tokens** — Colors, typography, spacing provided by Carbon.
-2. **Light/dark appearance** — The overall color scheme, controlled by Carbon themes (`white`, `g10`, `g90`, `g100`).
-3. **Organization branding** — Logos, names, and accent colors specific to an organization.
+This separation ensures that switching from one laboratory's branding to another does not change the meaning of an alarm indicator or recolor data series in a chart.
 
-These are composed, not coupled. A SLAC-branded application and a Fermilab-branded application can both use the same components in both light and dark modes.
+## Interactive Configurator
 
-## How it works today
+Use the controls below to configure a preview theme. **Your selections are applied globally** — navigate to any component page to see the same configuration in action.
 
-### Light and dark mode
+The documentation site itself remains visually neutral regardless of your preview configuration.
 
-Use Carbon's `Theme` component to set the appearance:
+<ThemeConfigurator />
 
-```tsx
-import { Theme } from '@carbon/react';
+## How it works
 
-<Theme theme="white">  {/* Light */}
-<Theme theme="g100">   {/* Dark */}
-```
+### Application-level theming
 
-### Organization branding
-
-SWAPPS components accept organization-specific values through props:
+Applications configure their theme once at the root level using `SWAPPSThemeProvider`:
 
 ```tsx
-<AppHeader orgName="SLAC" appTitle="My App" />
-<AppHeader orgName="Fermilab" appTitle="Beam Monitor" />
+import { SWAPPSThemeProvider } from '@swapps/ui';
+
+const config = {
+  appearance: 'dark',
+  branding: {
+    organizationName: 'SLAC',
+    primaryColor: '#8c1515',
+  },
+};
+
+function App() {
+  return (
+    <SWAPPSThemeProvider config={config}>
+      <AppHeader appTitle="My Application" />
+      {/* All components inherit the theme automatically */}
+    </SWAPPSThemeProvider>
+  );
+}
 ```
 
-No theme file or configuration object is needed for basic branding — it's just props.
+### Component behavior by category
 
-## Future direction
+| Theme property | General UI | Controls | Charts |
+|---|---|---|---|
+| Light/dark mode | ✓ Inherited | ✓ Inherited | ✓ Inherited |
+| Shared semantic tokens | ✓ | ✓ | ✓ |
+| Lab name/logo | ✓ Where appropriate | ✗ | ✗ |
+| Lab brand colors | ✓ Selectively | ✗ | ✗ |
+| Functional status colors | ✓ Where appropriate | ✓ | ✓ Where appropriate |
+| Visualization palette | ✓ Where appropriate | ✓ Where appropriate | ✓ |
 
-:::info Extended theming — planned
-A more structured theme configuration system is planned for when the design system needs to support:
+### Carbon foundation
 
-- Organization-specific accent colors
-- Custom CSS token overrides
-- Theme presets (e.g., a "SLAC theme" package)
-- Per-application theme configuration files
+SWAPPS builds on IBM Carbon's theme system:
 
-This will build on Carbon's token and theming system rather than replacing it.
-:::
+- **`white`** and **`g10`** for light mode
+- **`g90`** and **`g100`** for dark mode
+
+Carbon's semantic tokens (`$text-primary`, `$layer-01`, `$support-error`, etc.) are used throughout. SWAPPS adds a minimal set of custom tokens for branding and scientific semantics.
 
 ## Guidance
 
-- Use Carbon themes for light/dark mode.
-- Use component props for organization identity.
-- Do not assume specific colors are "official" for any organization.
-- Test components in both light and dark modes.
+- Use `SWAPPSThemeProvider` at the application root.
+- Pass organization identity through the provider's `branding` config.
+- Do not pass individual theme props to every component.
+- Use Carbon color tokens for standard UI elements.
+- Use `--swapps-status-*` tokens for functional control states.
+- Do not assume any color values are official to a specific organization.
+- Test all components in both light and dark mode.

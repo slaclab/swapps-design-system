@@ -9,9 +9,11 @@ title: Colors
 
 The SWAPPS Design System uses IBM Carbon's color system as its foundation. Carbon provides a comprehensive set of color tokens for backgrounds, text, interactive elements, status indicators, and more.
 
+SWAPPS extends Carbon with three additional token sets for concerns specific to multi-laboratory scientific applications.
+
 ## Carbon color tokens
 
-Rather than defining a separate color palette, use Carbon's [color tokens](https://carbondesignsystem.com/elements/color/tokens/) in your applications. These tokens adapt automatically to light and dark themes.
+Use Carbon's [color tokens](https://carbondesignsystem.com/elements/color/tokens/) for standard UI elements. These tokens adapt automatically to light and dark themes.
 
 Common token categories:
 
@@ -23,17 +25,56 @@ Common token categories:
 | **Support** | `$support-error`, `$support-success` | Status and feedback |
 | **Border** | `$border-subtle`, `$border-strong` | Dividers and outlines |
 
-## Organization-specific accent colors
+## SWAPPS token extensions
 
-Organizations may want to use their own accent or brand colors for specific elements like logos, banners, or highlights.
+### Brand tokens
 
-:::info Branding tokens — planned
-A mechanism for configuring organization-specific accent colors through the theme system is planned but not yet implemented. See the [themes overview](/docs/themes/overview).
-:::
+Organization-specific accent colors, configured through `SWAPPSThemeProvider`:
+
+| Token | Purpose | Used by |
+|---|---|---|
+| `--swapps-brand-primary` | Organization's primary color | General UI only |
+| `--swapps-brand-accent` | Organization's accent color | General UI only |
+
+These are `transparent` by default and only take effect when a laboratory configures them. They are **not used** by scientific controls or chart components.
+
+### Semantic status tokens
+
+Fixed, system-defined colors for functional states:
+
+| Token | Purpose |
+|---|---|
+| `--swapps-status-normal` | Normal/healthy state |
+| `--swapps-status-warning` | Warning condition |
+| `--swapps-status-error` | Error state |
+| `--swapps-status-critical` | Critical alarm |
+| `--swapps-status-disabled` | Disabled/inactive |
+| `--swapps-status-disconnected` | Disconnected from data source |
+| `--swapps-status-unknown` | Unknown/indeterminate state |
+
+These remain consistent regardless of the selected laboratory. See [Themes overview](/docs/themes/overview) for a visual reference.
+
+### Visualization palette
+
+Chart series colors optimized for data readability and accessibility:
+
+| Token | Default |
+|---|---|
+| `--swapps-viz-series-1` | `#6929c4` |
+| `--swapps-viz-series-2` | `#1192e8` |
+| `--swapps-viz-series-3` | `#005d5d` |
+| `--swapps-viz-series-4` | `#9f1853` |
+| `--swapps-viz-series-5` | `#fa4d56` |
+| `--swapps-viz-series-6` | `#570408` |
+| `--swapps-viz-series-7` | `#198038` |
+| `--swapps-viz-series-8` | `#002d9c` |
 
 ## Guidance
 
 - **Do** use Carbon color tokens for all standard UI elements.
+- **Do** use `--swapps-status-*` tokens for functional control states.
+- **Do** use `--swapps-viz-series-*` tokens for chart data series.
 - **Do** ensure sufficient color contrast (WCAG AA minimum).
 - **Do not** hardcode hex values in component code — use tokens.
+- **Do not** use brand tokens in scientific controls or charts.
 - **Do not** assume SLAC-specific colors are part of the shared system.

@@ -1,0 +1,95 @@
+---
+sidebar_position: 3
+title: Choose Your Components
+---
+
+import Link from '@docusaurus/Link';
+import PackageThumb from '@site/src/components/PackageCardThumbnail';
+
+# Choose your components
+
+The SWAPPS Design System is organized into focused packages. Install only what your application needs.
+
+<div className="swapps-package-directory">
+
+<div className="swapps-package-directory__card">
+<div className="swapps-package-directory__thumb">
+<PackageThumb id="general-ui" />
+</div>
+<div className="swapps-package-directory__body">
+<div className="swapps-package-directory__header">
+<h2>General UI</h2>
+<span className="swapps-component-card__badge swapps-component-card__badge--available">Available</span>
+</div>
+
+`@swapps/ui`
+
+The application shell — header, navigation, and layout — with configurable organization branding and light/dark mode support.
+
+<div className="swapps-package-directory__components">
+<strong>Includes:</strong> AppHeader · AppShell
+</div>
+
+<Link className="button button--primary button--sm" to="/docs/components/general-ui">
+Explore General UI →
+</Link>
+</div>
+</div>
+
+<div className="swapps-package-directory__card swapps-package-directory__card--planned">
+<div className="swapps-package-directory__thumb">
+<PackageThumb id="controls" />
+</div>
+<div className="swapps-package-directory__body">
+<div className="swapps-package-directory__header">
+<h2>Scientific Controls</h2>
+<span className="swapps-component-card__badge swapps-component-card__badge--planned">Planned</span>
+</div>
+
+`@swapps/controls`
+
+Status indicators, setpoint controls, alarm panels, and other components for monitoring and controlling scientific instruments and systems.
+
+<div className="swapps-package-directory__components">
+<strong>Planned:</strong> Status displays · Setpoint controls · Alarm panels
+</div>
+</div>
+</div>
+
+<div className="swapps-package-directory__card swapps-package-directory__card--planned">
+<div className="swapps-package-directory__thumb">
+<PackageThumb id="charts" />
+</div>
+<div className="swapps-package-directory__body">
+<div className="swapps-package-directory__header">
+<h2>Charts &amp; Visualization</h2>
+<span className="swapps-component-card__badge swapps-component-card__badge--planned">Planned</span>
+</div>
+
+`@swapps/charts`
+
+Time-series plots, trend charts, and dashboards for visualizing scientific data in real time.
+
+<div className="swapps-package-directory__components">
+<strong>Planned:</strong> Time-series plots · Trend charts · Dashboards
+</div>
+</div>
+</div>
+
+</div>
+
+## What about buttons, forms, and tables?
+
+For standard UI primitives, use [IBM Carbon](https://carbondesignsystem.com/) directly alongside SWAPPS packages. Carbon provides buttons, text inputs, data tables, dialogs, notifications, and [much more](https://carbondesignsystem.com/components/overview/) — all accessible and well-documented.
+
+```tsx
+import { Button, TextInput } from '@carbon/react';
+import { AppHeader } from '@swapps/ui';
+```
+
+See the [Carbon integration guide](/docs/development/carbon-integration) for details on using Carbon components in your application.
+
+## Next steps
+
+- **[Quick Start](/docs/getting-started/quick-start)** — Install and use your first component.
+- **[Roadmap](/docs/resources/roadmap)** — See what's planned for future packages and components.

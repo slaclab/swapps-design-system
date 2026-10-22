@@ -3,56 +3,93 @@ sidebar_position: 6
 title: Light & Dark Mode
 ---
 
-# Light and dark mode
+# Light and Dark Mode
 
 ## Approach
 
-The SWAPPS Design System supports both light and dark color schemes. These are independent of organization branding — any organization's theme should work in both modes.
+The SWAPPS Design System supports both light and dark color schemes through IBM Carbon's theme system. Appearance is shared across all component categories — general UI, scientific controls, and charts all respond to the same light/dark setting.
 
-## Carbon themes
+Appearance is independent of organization branding. Any laboratory's theme works in both modes.
 
-Carbon provides four built-in themes:
+## Using SWAPPSThemeProvider
 
-| Theme | Appearance | Use case |
+The recommended way to control appearance is through `SWAPPSThemeProvider`:
+
+```tsx
+import { SWAPPSThemeProvider } from '@swapps/ui';
+
+// Light mode
+<SWAPPSThemeProvider config={{ appearance: 'light', branding: { organizationName: '' } }}>
+  {/* Components render with white/light backgrounds */}
+</SWAPPSThemeProvider>
+
+// Dark mode
+<SWAPPSThemeProvider config={{ appearance: 'dark', branding: { organizationName: '' } }}>
+  {/* Components render with dark backgrounds */}
+</SWAPPSThemeProvider>
+```
+
+## Carbon theme mapping
+
+| Appearance | Carbon theme | Description |
 |---|---|---|
-| `white` | Light | Light backgrounds |
-| `g10` | Light (gray) | Subtle light backgrounds |
-| `g90` | Dark (gray) | Dark UI |
-| `g100` | Dark | High-contrast dark UI |
+| `'light'` | `white` | Light backgrounds |
+| `'dark'` | `g100` | High-contrast dark UI |
 
-Use Carbon's `Theme` component or Sass configuration to apply a theme:
+For raised surfaces (panels, cards), use the `appearanceToCarbonTheme` utility with the `'raised'` variant:
+
+```tsx
+import { appearanceToCarbonTheme } from '@swapps/ui';
+
+appearanceToCarbonTheme('light', 'raised');  // 'g10'
+appearanceToCarbonTheme('dark', 'raised');   // 'g90'
+```
+
+## Using Carbon's Theme directly
+
+You can also use Carbon's `Theme` component directly for scoped theme sections:
 
 ```tsx
 import { Theme } from '@carbon/react';
 
-function App() {
-  return (
-    <Theme theme="g100">
-      {/* Dark mode content */}
-    </Theme>
-  );
-}
+<Theme theme="g100">
+  {/* Dark mode content */}
+</Theme>
 ```
+
+This works independently of `SWAPPSThemeProvider` and is useful for embedding a different appearance in a specific section.
 
 ## Light/dark mode vs. branding
 
-These are separate concepts:
+These are separate concerns that compose independently:
 
-- **Light/dark mode** — The overall color scheme (background, text, surfaces).
-- **Organization branding** — Logos, accent colors, names.
+| Combination | Result |
+|---|---|
+| SLAC + Light | SLAC branding on light backgrounds |
+| SLAC + Dark | SLAC branding on dark backgrounds |
+| Fermilab + Light | Fermilab branding on light backgrounds |
+| Fermilab + Dark | Fermilab branding on dark backgrounds |
 
-An application should support:
+The same component handles all combinations. Switching appearance does not affect branding, and vice versa.
 
-- SLAC light
-- SLAC dark
-- Another lab's light
-- Another lab's dark
+## What adapts to appearance changes
 
-The same component handles all four — through a combination of Carbon theme selection and organization props.
+| Element | Adapts | Source |
+|---|---|---|
+| Surface backgrounds | ✓ | Carbon tokens |
+| Text colors | ✓ | Carbon tokens |
+| Border colors | ✓ | Carbon tokens |
+| Interactive states | ✓ | Carbon tokens |
+| Status indicator colors | Partially | Semantic tokens (fixed values, but components may adjust presentation) |
+| Chart backgrounds & axes | ✓ | Carbon tokens |
+| Brand colors | No change | Configured by the application |
+| Visualization palette | No change | Fixed for consistency |
 
 ## Guidance
 
+- Use `SWAPPSThemeProvider` to set appearance at the application root.
 - Use Carbon color tokens so elements adapt automatically.
-- Test components in both light and dark modes.
+- Test all components in both light and dark modes.
 - Avoid hardcoding colors that don't respond to theme changes.
 - Consider the `prefers-color-scheme` media query for respecting system preferences.
+- In the documentation site, use the [Themes configurator](/docs/themes/overview) to preview components in both modes.

@@ -1,0 +1,38 @@
+---
+title: General UI
+sidebar_label: General UI
+sidebar_position: 1
+---
+
+import Link from '@docusaurus/Link';
+import Thumb from '@site/src/components/ComponentCardThumbnail';
+
+# General UI Components
+
+Application-level components from `@swapps/ui` that support organization branding, light/dark mode, and configurable layouts.
+
+Configure your lab's branding on the [Themes](/docs/themes/overview) page to see it reflected in component previews.
+
+<div className="swapps-component-cards">
+
+<Link to="/docs/components/general-ui/app-header" className="swapps-component-card">
+  <Thumb id="app-header" />
+  <div className="swapps-component-card__body">
+    <span className="swapps-component-card__badge swapps-component-card__badge--available">Available</span>
+    <h3>AppHeader</h3>
+    <p>Configurable application header with organization branding, navigation, and global actions.</p>
+  </div>
+</Link>
+
+<Link to="/docs/components/general-ui/app-shell" className="swapps-component-card">
+  <Thumb id="app-shell" />
+  <div className="swapps-component-card__body">
+    <span className="swapps-component-card__badge swapps-component-card__badge--available">Available</span>
+    <h3>AppShell</h3>
+    <p>Application layout shell with header, optional side panels, bottom panel, and main content area.</p>
+  </div>
+</Link>
+
+</div>
+
+For navigation patterns (top nav, side nav, filter sidebars), see the [Navigation guide](/docs/patterns/navigation).

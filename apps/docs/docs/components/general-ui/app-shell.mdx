@@ -1,0 +1,200 @@
+---
+sidebar_position: 4
+title: Application Shell
+---
+
+import { LayoutDiagram } from '@site/src/components/LayoutDiagram';
+
+# AppShell
+
+The `AppShell` component provides a complete application layout — header, optional side panels, an optional bottom panel, and a main content area — in a single component.
+
+```bash
+import { AppShell } from '@swapps/ui';
+```
+
+## Usage
+
+```tsx
+import { AppShell } from '@swapps/ui';
+
+function App() {
+  return (
+    <AppShell orgName="SLAC" appTitle="My Application">
+      <main>Application content</main>
+    </AppShell>
+  );
+}
+```
+
+### With panels
+
+```tsx
+<AppShell
+  orgName="SLAC"
+  appTitle="Trace"
+  navigation={[{ label: 'Home', href: '/' }]}
+  leftPanel={<PVList />}
+  leftPanelWidth={240}
+  rightPanel={<Properties />}
+  rightPanelWidth={280}
+>
+  <PlotCanvas />
+</AppShell>
+```
+
+### With a bottom panel
+
+```tsx
+<AppShell
+  orgName="SLAC"
+  appTitle="Screen Builder"
+  leftPanel={<ComponentPalette />}
+  rightPanel={<Inspector />}
+  bottomPanel={<CodePreview />}
+  bottomPanelHeight={150}
+>
+  <VisualCanvas />
+</AppShell>
+```
+
+## Props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `appTitle` | `string` | **required** | Application title displayed in the header |
+| `orgName` | `string` | — | Organization name (e.g., "SLAC") |
+| `navigation` | `NavigationItem[]` | `[]` | Navigation links in the header bar |
+| `headerProps` | `Partial<AppHeaderProps>` | — | Additional AppHeader configuration (logo, search, utilities, etc.) |
+| `leftPanel` | `ReactNode` | — | Content rendered in the left side panel |
+| `leftPanelWidth` | `number` | `256` | Width of the left panel in pixels |
+| `rightPanel` | `ReactNode` | — | Content rendered in the right side panel |
+| `rightPanelWidth` | `number` | `256` | Width of the right panel in pixels |
+| `bottomPanel` | `ReactNode` | — | Content rendered in the bottom panel |
+| `bottomPanelHeight` | `number` | `200` | Height of the bottom panel in pixels |
+| `children` | `ReactNode` | **required** | Main content area |
+| `className` | `string` | — | Additional CSS class on the root element |
+
+---
+
+## Layouts
+
+The examples below show how AppShell configurations map to real application layouts. Each diagram highlights which major components are present and why.
+
+### Header only
+
+For simple applications with a small number of sections. Navigation lives entirely in the header bar, and the full viewport is available for content.
+
+<LayoutDiagram variant="header-only" />
+
+```tsx
+<AppShell orgName="SLAC" appTitle="Dashboard">
+  <DashboardContent />
+</AppShell>
+```
+
+**When to use:** Dashboards, status pages, single-purpose tools, or any application where 2–5 top-level sections fit comfortably in the header.
+
+---
+
+### Header + filter sidebar — Electronic Logbook
+
+The primary interaction in the e-log is filtering and searching through log entries. A collapsible sidebar holds date ranges, category filters, author filters, and keyword search, giving vertical space for many filter options without crowding the main content.
+
+<LayoutDiagram variant="filter-sidebar" />
+
+```tsx
+<AppShell
+  orgName="SLAC"
+  appTitle="Electronic Logbook"
+  leftPanel={<FilterPanel />}
+  leftPanelWidth={280}
+>
+  <LogEntryResults />
+</AppShell>
+```
+
+**Why this layout:** The e-log has a single purpose — browse and search entries. Top-level navigation is minimal (lives in the header), but the number of filters is high. A sidebar keeps them all visible and collapsible without pushing the entry list down the page.
+
+**Why sidebar instead of top bar for filters?** Filters often have many options (dropdowns, checkboxes, date pickers). A vertical sidebar gives them room to grow. Users can collapse it to maximize the results area, then expand it when they need to refine. For applications with only 1–3 simple filters, a top bar or inline row above the content may be sufficient.
+
+---
+
+### Header + side navigation — Save COmpare REstore
+
+SCORE has three distinct functional areas — Save, Compare, and Restore — each with its own workflow. A sidebar provides clear navigation between these sections while keeping the full content area available for each workflow.
+
+<LayoutDiagram variant="side-nav" />
+
+```tsx
+<AppShell
+  orgName="SLAC"
+  appTitle="Save Compare Restore"
+  leftPanel={<SideNavigation />}
+  leftPanelWidth={200}
+>
+  <ActiveSectionContent />
+</AppShell>
+```
+
+**Why this layout:** With three major sections, a sidebar makes the current context obvious. Each section is a distinct workflow (not a filter variation), so side navigation fits better than a filter sidebar. The sidebar can also hold sub-items or section-specific actions.
+
+---
+
+### Dual sidebar — Trace
+
+The left panel lists all available data points (PVs). Clicking a point shows its trace in the main plotting area. The right panel shows the selected point's properties, axis configuration, and display settings. This is a common pattern in tools like Figma, Xcode, and many IDE property inspectors.
+
+<LayoutDiagram variant="dual-sidebar" />
+
+```tsx
+<AppShell
+  orgName="SLAC"
+  appTitle="Trace"
+  leftPanel={<PVList />}
+  leftPanelWidth={200}
+  rightPanel={<PointProperties />}
+  rightPanelWidth={280}
+>
+  <PlotCanvas />
+</AppShell>
+```
+
+**Why this layout:** Users need to see all available points, view the plot, and configure the selected point's display — three concerns that naturally map to left panel, center, and right panel. Both side panels can be independently resizable so users can prioritize whichever view matters most.
+
+---
+
+### Dual sidebar + bottom panel — Screen Builder
+
+A visual editor for building control screens. The left panel holds a component palette and screen tree. The right panel shows the selected component's properties. A collapsible bottom panel lets users view or edit the generated code for the component they've selected on the canvas.
+
+<LayoutDiagram variant="dual-sidebar-bottom" />
+
+```tsx
+<AppShell
+  orgName="SLAC"
+  appTitle="Screen Builder"
+  leftPanel={<AssetPalette />}
+  leftPanelWidth={200}
+  rightPanel={<Inspector />}
+  rightPanelWidth={260}
+  bottomPanel={<CodePreview />}
+  bottomPanelHeight={180}
+>
+  <VisualCanvas />
+</AppShell>
+```
+
+**Why this layout:** Screen Builder is an IDE-style tool. The component palette and screen hierarchy need their own panel. Property inspection needs another. The bottom code panel is critical for developers who want to see or tweak the generated output, but it should be collapsible since visual-first users may not need it. A drag handle or toggle button lets users expand it when needed.
+
+**When to use a bottom panel:** Any application where users occasionally need to see supplementary output — code, logs, a console, or a detail view — that doesn't warrant a permanent side panel. The bottom panel should always be collapsible to preserve vertical space.
+
+---
+
+## Guidance
+
+- Keep navigation predictable. Users should always know where they are.
+- On smaller screens, side panels should collapse or become a hamburger menu.
+- Make filter sidebars and bottom panels collapsible — users should be able to maximize their content area.
+- For dual-sidebar layouts, allow each panel to be independently resizable when possible.
+- For filter-heavy applications, prefer a sidebar over a top bar for filter controls. See [Navigation](/docs/patterns/navigation) for more detail.
