@@ -11,8 +11,11 @@ const config: Config = {
     v4: true,
   },
 
-  url: "https://swapps-design-system.example.com",
-  baseUrl: "/",
+  url: "https://slaclab.github.io",
+  baseUrl: "/swapps-design-system/",
+
+  organizationName: "slaclab",
+  projectName: "swapps-design-system",
 
   onBrokenLinks: "throw",
 
