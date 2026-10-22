@@ -28,7 +28,7 @@ const features: FeatureCardProps[] = [
     title: "Getting Started",
     description:
       "Learn how to install the component library, set up your project, and start building consistent interfaces.",
-    link: "/docs/getting-started/introduction",
+    link: "/docs/getting-started/overview",
     linkLabel: "Read the guide",
   },
   {
@@ -56,7 +56,7 @@ const features: FeatureCardProps[] = [
     title: "Patterns",
     description:
       "Discover recommended patterns for application layouts, navigation, loading states, error handling, and responsive design.",
-    link: "/docs/patterns/application-layouts",
+    link: "/docs/patterns/loading-states",
     linkLabel: "Browse patterns",
   },
   {
@@ -83,7 +83,7 @@ export default function Home(): ReactNode {
             Laboratory. Designed for adoption by any software development team.
           </p>
           <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
-            <Link className="button button--primary button--lg" to="/docs/getting-started/introduction">
+            <Link className="button button--primary button--lg" to="/docs/getting-started/overview">
               Get Started
             </Link>
             <Link className="button button--outline button--lg" to="/docs/components/overview">

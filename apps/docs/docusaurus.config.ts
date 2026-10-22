@@ -20,12 +20,17 @@ const config: Config = {
     hooks: {
       onBrokenMarkdownLinks: "warn",
     },
+    mdx1Compat: {
+      admonitions: true,
+    },
   },
 
   i18n: {
     defaultLocale: "en",
     locales: ["en"],
   },
+
+  plugins: ["docusaurus-plugin-sass"],
 
   presets: [
     [
@@ -69,7 +74,7 @@ const config: Config = {
         {
           title: "Documentation",
           items: [
-            { label: "Getting Started", to: "/docs/getting-started/introduction" },
+            { label: "Getting Started", to: "/docs/getting-started/overview" },
             { label: "Foundations", to: "/docs/foundations/design-principles" },
             { label: "Components", to: "/docs/components/overview" },
           ],
@@ -85,7 +90,7 @@ const config: Config = {
           title: "Development",
           items: [
             { label: "Setup", to: "/docs/development/setup" },
-            { label: "Contributing", to: "/docs/getting-started/contributing" },
+            { label: "Contributing", to: "/docs/development/contributing" },
           ],
         },
       ],
