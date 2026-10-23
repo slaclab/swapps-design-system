@@ -10,7 +10,6 @@
     "build:docs": "pnpm --filter docs build",
     "build:ui": "pnpm --filter @swapps/ui build",
     "build:controls": "pnpm --filter @swapps/controls build",
-    "build:controls": "pnpm --filter @swapps/controls build",
     "test": "pnpm --filter @swapps/ui test",
     "typecheck": "pnpm -r run typecheck",
     "build": "pnpm build:ui && pnpm build:controls && pnpm build:docs",

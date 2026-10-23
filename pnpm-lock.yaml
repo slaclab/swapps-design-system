@@ -25,6 +25,9 @@ importers:
       '@mdx-js/react':
         specifier: ^3.0.0
         version: 3.1.1(@types/react@19.3.0)(react@19.3.1)
+      '@swapps/controls':
+        specifier: workspace:*
+        version: link:../../packages/controls
       '@swapps/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -81,6 +84,30 @@ importers:
       echarts-for-react:
         specifier: ^3.0.2
         version: 3.0.6(echarts@5.6.0)(react@19.3.1)
+      react:
+        specifier: ^19.0.0
+        version: 19.3.1
+      react-dom:
+        specifier: ^19.0.0
+        version: 19.3.1(react@19.3.1)
+      tsup:
+        specifier: ^8.5.0
+        version: 8.5.1(@swc/core@1.16.18(@swc/helpers@0.5.23))(jiti@1.21.7)(postcss@8.5.30)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.2.1
+        version: 3.2.7(@types/debug@4.1.13)(@types/node@26.6.5)(jiti@1.21.7)(jsdom@26.1.0)(lightningcss@1.33.0)(sass@1.105.1)(terser@5.51.2)
+
+  packages/controls:
+    devDependencies:
+      '@types/react':
+        specifier: ^19.0.0
+        version: 19.3.0
+      '@types/react-dom':
+        specifier: ^19.0.0
+        version: 19.3.0(@types/react@19.3.0)
       react:
         specifier: ^19.0.0
         version: 19.3.1
