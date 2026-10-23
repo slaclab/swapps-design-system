@@ -127,6 +127,18 @@
   color: var(--ifm-font-color-base);
 }
 
+.swapps-preview__control-group input[type="range"] {
+  width: 120px;
+  cursor: pointer;
+}
+
+.swapps-preview__control-group input[type="color"] {
+  width: 36px;
+  height: 32px;
+  padding: 2px;
+  cursor: pointer;
+}
+
 /* Preview config indicator */
 .swapps-config-indicator {
   display: inline-flex;
