@@ -3,11 +3,19 @@ title: EmbeddedDisplay
 sidebar_position: 9
 ---
 
+import EmbeddedDisplayPlayground from '@site/src/components/playgrounds/EmbeddedDisplayPlayground';
+
 # EmbeddedDisplay
 
 Loads and renders another display definition inline within the current layout. Used for composing complex control screens from reusable sub-displays — a beamline overview might embed individual device panels, each defined and maintained separately.
 
 Inspired by [PyDMEmbeddedDisplay](https://slaclab.github.io/pydm/widgets/embedded_display.html).
+
+## Interactive preview
+
+This preview demonstrates the loading, error, and manual states. Dynamic imports are not available in the documentation context, so the loaded state is not shown here.
+
+<EmbeddedDisplayPlayground />
 
 ## Usage
 
