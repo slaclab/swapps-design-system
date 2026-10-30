@@ -5,8 +5,7 @@ title: Quick Start
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
-import ComponentPreview from '@site/src/components/preview/ComponentPreview';
-import { AppHeader } from '@swapps/ui';
+import IframePreview from '@site/src/components/preview/IframePreview';
 
 # Quick Start
 
@@ -79,17 +78,23 @@ function App() {
 }
 ```
 
-<ComponentPreview label="Result">
-  <AppHeader
-    orgName="SLAC"
-    appTitle="Experiment Tracker"
-    navItems={[
-      { label: 'Dashboard', href: '#' },
-      { label: 'Experiments', href: '#' },
-      { label: 'Settings', href: '#' },
-    ]}
-  />
-</ComponentPreview>
+<IframePreview
+  component="AppHeader"
+  props={{
+    appTitle: "Experiment Tracker",
+    overrideOrg: "SLAC",
+    showNav: true,
+    showSearch: false,
+    showAdmin: false,
+    showActions: false,
+    showThemeToggle: false,
+    showBugReport: false,
+    showHelp: false,
+    showAccount: false,
+  }}
+  label="Result"
+  category="ui"
+/>
 
 The `orgName`, `appTitle`, and `navItems` props configure the header for your application and organization. Any lab can use the same component with their own identity — no library changes needed.
 

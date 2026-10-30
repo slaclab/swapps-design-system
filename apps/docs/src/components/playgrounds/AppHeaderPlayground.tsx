@@ -1,15 +1,7 @@
-import React, { useState } from "react";
-import { AppHeader } from "@swapps/ui";
-import { Search } from "@carbon/react";
+import React, { useState, useMemo } from "react";
 import { usePreviewConfig } from "../../contexts/PreviewConfigContext";
-import ComponentPreview from "../preview/ComponentPreview";
+import IframePreview from "../preview/IframePreview";
 import PreviewConfigIndicator from "../preview/PreviewConfigIndicator";
-
-const DEFAULT_NAV_ITEMS = [
-  { label: "Dashboard", href: "#" },
-  { label: "Data", href: "#" },
-  { label: "Settings", href: "#" },
-];
 
 export default function AppHeaderPlayground() {
   const { previewConfig } = usePreviewConfig();
@@ -24,56 +16,43 @@ export default function AppHeaderPlayground() {
   const [showHelp, setShowHelp] = useState(true);
   const [showAccount, setShowAccount] = useState(true);
 
-  const navigation = showNav ? DEFAULT_NAV_ITEMS : [];
+  const headerProps = useMemo(
+    () => ({
+      appTitle,
+      overrideOrg,
+      showNav,
+      showSearch,
+      showAdmin,
+      showActions,
+      showThemeToggle,
+      showBugReport,
+      showHelp,
+      showAccount,
+    }),
+    [
+      appTitle,
+      overrideOrg,
+      showNav,
+      showSearch,
+      showAdmin,
+      showActions,
+      showThemeToggle,
+      showBugReport,
+      showHelp,
+      showAccount,
+    ]
+  );
 
   return (
     <div>
       <PreviewConfigIndicator />
 
-      <ComponentPreview label="Interactive Preview" category="ui">
-        <AppHeader
-          orgName={overrideOrg || undefined}
-          appTitle={appTitle || "Untitled"}
-          navigation={navigation}
-          homeHref="#"
-          search={
-            showSearch ? (
-              <Search
-                size="lg"
-                placeholder="Search application..."
-                labelText="Search"
-                closeButtonLabelText="Clear search"
-                onChange={() => {}}
-              />
-            ) : undefined
-          }
-          admin={
-            showAdmin
-              ? { href: "#admin", label: "Admin" }
-              : undefined
-          }
-          actions={
-            showActions
-              ? [
-                  { label: "Drafts", href: "#drafts" },
-                  { label: "New Entry", href: "#new", primary: true },
-                ]
-              : []
-          }
-          utilities={{
-            themeToggle: showThemeToggle,
-            reportBug: showBugReport
-              ? { onClick: () => alert("Bug report opened") }
-              : undefined,
-            help: showHelp
-              ? { href: "#help" }
-              : undefined,
-            account: showAccount
-              ? { onClick: () => alert("Account menu opened") }
-              : undefined,
-          }}
-        />
-      </ComponentPreview>
+      <IframePreview
+        component="AppHeader"
+        props={headerProps}
+        label="Interactive Preview"
+        category="ui"
+      />
 
       <div
         className="swapps-preview__controls"

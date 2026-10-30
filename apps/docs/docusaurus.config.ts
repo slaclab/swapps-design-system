@@ -33,7 +33,24 @@ const config: Config = {
     locales: ["en"],
   },
 
-  plugins: ["docusaurus-plugin-sass"],
+  plugins: [
+    "docusaurus-plugin-sass",
+    function ignoreControlsDynamicImportWarning() {
+      return {
+        name: "ignore-controls-dynamic-import-warning",
+        configureWebpack() {
+          return {
+            ignoreWarnings: [
+              {
+                module: /packages\/controls\/dist\/index\.js/,
+                message: /Critical dependency/,
+              },
+            ],
+          };
+        },
+      };
+    },
+  ],
 
   presets: [
     [

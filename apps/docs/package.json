@@ -4,6 +4,9 @@
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
+    "prebuild": "node scripts/build-carbon-css.mjs",
+    "predev": "node scripts/build-carbon-css.mjs",
+    "prestart": "node scripts/build-carbon-css.mjs",
     "dev": "docusaurus start",
     "start": "docusaurus start",
     "build": "docusaurus build",
