@@ -94,6 +94,78 @@ describe("AppHeader navigation", () => {
   });
 });
 
+describe("AppHeader client-side routing", () => {
+  const RouterLink = React.forwardRef<
+    HTMLAnchorElement,
+    React.AnchorHTMLAttributes<HTMLAnchorElement>
+  >(function RouterLink({ href, ...props }, ref) {
+    return <a ref={ref} href={href} data-router-link={href} {...props} />;
+  });
+
+  it("renders the title and navigation with linkAs, keeping Carbon's props", () => {
+    render(
+      <AppHeader
+        appTitle="My App"
+        homeHref="/home"
+        navigation={[{ label: "Dashboard", href: "/dashboard" }]}
+        linkAs={RouterLink}
+      />
+    );
+    const home = screen.getByRole("link", { name: /My App/ });
+    expect(home).toHaveAttribute("data-router-link", "/home");
+    expect(home).toHaveClass("cds--header__name");
+
+    const item = screen.getByRole("link", { name: "Dashboard" });
+    expect(item).toHaveAttribute("data-router-link", "/dashboard");
+    expect(item).toHaveClass("cds--header__menu-item");
+    expect(item).toHaveAttribute("tabindex", "0");
+  });
+
+  it("renders plain anchors without linkAs", () => {
+    render(
+      <AppHeader
+        appTitle="My App"
+        navigation={[{ label: "Dashboard", href: "/dashboard" }]}
+      />
+    );
+    const item = screen.getByRole("link", { name: "Dashboard" });
+    expect(item).toHaveAttribute("href", "/dashboard");
+    expect(item).not.toHaveAttribute("data-router-link");
+  });
+
+  it("calls onNavigate for admin, action and help hrefs", () => {
+    const onNavigate = vi.fn();
+    render(
+      <AppHeader
+        appTitle="My App"
+        admin={{ href: "/admin" }}
+        actions={[{ label: "New Entry", href: "/new" }]}
+        utilities={{ help: { href: "/docs" } }}
+        onNavigate={onNavigate}
+      />
+    );
+    fireEvent.click(screen.getByLabelText("Admin"));
+    fireEvent.click(screen.getByLabelText("New Entry"));
+    fireEvent.click(screen.getByLabelText("Help"));
+    expect(onNavigate.mock.calls).toEqual([["/admin"], ["/new"], ["/docs"]]);
+  });
+
+  it("prefers an action's onClick over onNavigate", () => {
+    const onClick = vi.fn();
+    const onNavigate = vi.fn();
+    render(
+      <AppHeader
+        appTitle="My App"
+        actions={[{ label: "Create", href: "/new", onClick }]}
+        onNavigate={onNavigate}
+      />
+    );
+    fireEvent.click(screen.getByLabelText("Create"));
+    expect(onClick).toHaveBeenCalledOnce();
+    expect(onNavigate).not.toHaveBeenCalled();
+  });
+});
+
 describe("AppHeader search", () => {
   it("renders a search slot when provided", () => {
     render(

@@ -1,6 +1,6 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
 import { AppShell } from "./AppShell";
 
 describe("AppShell", () => {
@@ -184,6 +184,34 @@ describe("AppShell header props forwarding", () => {
       </AppShell>
     );
     expect(screen.getByPlaceholderText("Search...")).toBeInTheDocument();
+  });
+
+  it("forwards linkAs and onNavigate to AppHeader", () => {
+    const RouterLink = React.forwardRef<
+      HTMLAnchorElement,
+      React.AnchorHTMLAttributes<HTMLAnchorElement>
+    >(function RouterLink(props, ref) {
+      return <a ref={ref} data-router-link="" {...props} />;
+    });
+    const onNavigate = vi.fn();
+    render(
+      <AppShell
+        appTitle="My App"
+        navigation={[{ label: "Data", href: "/data" }]}
+        headerProps={{
+          linkAs: RouterLink,
+          onNavigate,
+          actions: [{ label: "New Entry", href: "/new" }],
+        }}
+      >
+        Content
+      </AppShell>
+    );
+    expect(screen.getByRole("link", { name: "Data" })).toHaveAttribute(
+      "data-router-link"
+    );
+    fireEvent.click(screen.getByLabelText("New Entry"));
+    expect(onNavigate).toHaveBeenCalledWith("/new");
   });
 });
 

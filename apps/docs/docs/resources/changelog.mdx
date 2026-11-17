@@ -5,6 +5,20 @@ title: Changelog
 
 # Changelog
 
+## Unreleased
+
+### Added
+
+- **Client-side routing for `AppHeader`**:
+  - `linkAs` renders the title and navigation links with a router's link component (through Carbon's `as` prop).
+  - `onNavigate` handles `admin`, `actions` and `utilities.help` hrefs.
+  - Both are forwarded by `AppShell` through `headerProps`.
+  - Router links that set `aria-current="page"` now give navigation items Carbon's active style.
+
+### Fixed
+
+- **Quick Start** used a `navItems` prop that doesn't exist. It now uses `navigation`.
+
 ## 0.1.0 — Initial foundation
 
 ### Added

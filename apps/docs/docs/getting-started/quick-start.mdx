@@ -64,7 +64,7 @@ function App() {
       <AppHeader
         orgName="SLAC"
         appTitle="Experiment Tracker"
-        navItems={[
+        navigation={[
           { label: 'Dashboard', href: '/dashboard' },
           { label: 'Experiments', href: '/experiments' },
           { label: 'Settings', href: '/settings' },
@@ -96,7 +96,7 @@ function App() {
   category="ui"
 />
 
-The `orgName`, `appTitle`, and `navItems` props configure the header for your application and organization. Any lab can use the same component with their own identity — no library changes needed.
+The `orgName`, `appTitle`, and `navigation` props configure the header for your application and organization. Any lab can use the same component with their own identity — no library changes needed.
 
 ---
 
@@ -150,7 +150,7 @@ function App() {
         primaryColor: '#003366',
       },
     }}>
-      <AppHeader appTitle="Beam Monitor" navItems={[
+      <AppHeader appTitle="Beam Monitor" navigation={[
         { label: 'Status', href: '/status' },
         { label: 'History', href: '/history' },
       ]} />

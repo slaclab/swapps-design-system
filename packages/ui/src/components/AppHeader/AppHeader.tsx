@@ -70,8 +70,23 @@ export interface AppHeaderProps {
   utilities?: UtilityConfig;
   /** Custom elements rendered in the global action area after utilities */
   globalActions?: React.ReactNode;
+  /**
+   * Component used to render the header's links (`homeHref` and `navigation`) instead of `<a>`,
+   * such as a client-side router's link. It receives `href` and `children`, plus Carbon's
+   * `className`, `ref`, `tabIndex` and `aria-current`, and must render an `<a>` with them.
+   */
+  linkAs?: React.ElementType;
+  /**
+   * Called with the `href` of `admin`, `actions` and `utilities.help` when they're clicked,
+   * for example to navigate with a client-side router. Defaults to a full page load.
+   */
+  onNavigate?: (href: string) => void;
   /** Accessible label for the overall header landmark */
   "aria-label"?: string;
+}
+
+function navigateWithPageLoad(href: string) {
+  window.location.href = href;
 }
 
 export function AppHeader({
@@ -86,6 +101,8 @@ export function AppHeader({
   actions = [],
   utilities,
   globalActions,
+  linkAs,
+  onNavigate = navigateWithPageLoad,
   "aria-label": ariaLabel,
 }: AppHeaderProps) {
   const branding = useSWAPPSBranding();
@@ -141,7 +158,7 @@ export function AppHeader({
           <div className="swapps-header__logo">{resolvedLogo}</div>
         )}
 
-        <HeaderName href={homeHref} prefix={prefix ?? ""}>
+        <HeaderName as={linkAs} href={homeHref} prefix={prefix ?? ""}>
           {appTitle}
         </HeaderName>
 
@@ -152,7 +169,7 @@ export function AppHeader({
         {navigation.length > 0 && (
           <HeaderNavigation aria-label="Main navigation">
             {navigation.map((item) => (
-              <HeaderMenuItem key={item.href} href={item.href}>
+              <HeaderMenuItem key={item.href} as={linkAs} href={item.href}>
                 {item.label}
               </HeaderMenuItem>
             ))}
@@ -164,9 +181,7 @@ export function AppHeader({
             {showAdmin && (
               <HeaderGlobalAction
                 aria-label={admin!.label ?? "Admin"}
-                onClick={() => {
-                  window.location.href = admin!.href;
-                }}
+                onClick={() => onNavigate(admin!.href)}
                 tooltipAlignment="end"
               >
                 <Settings size={20} />
@@ -182,11 +197,7 @@ export function AppHeader({
                 }
                 onClick={
                   action.onClick ??
-                  (action.href
-                    ? () => {
-                        window.location.href = action.href!;
-                      }
-                    : undefined)
+                  (action.href ? () => onNavigate(action.href!) : undefined)
                 }
                 tooltipAlignment="end"
               >
@@ -230,9 +241,7 @@ export function AppHeader({
                 onClick={
                   utilities.help.onClick ??
                   (utilities.help.href
-                    ? () => {
-                        window.location.href = utilities.help!.href!;
-                      }
+                    ? () => onNavigate(utilities.help!.href!)
                     : undefined)
                 }
                 tooltipAlignment="end"

@@ -170,6 +170,8 @@ function App() {
 | `actions` | `ActionItem[]` | `[]` | Application-specific action buttons in the global bar. |
 | `utilities` | `UtilityConfig` | — | Standardized utility controls (theme, bug, help, account). See below. |
 | `globalActions` | `ReactNode` | — | Custom elements rendered after utilities for cases not covered by the structured props. |
+| `linkAs` | `ElementType` | `"a"` | Component that renders the title and navigation links, such as a router's link. See [Client-side routing](#client-side-routing). |
+| `onNavigate` | `(href: string) => void` | Full page load | Called with the `href` of `admin`, `actions` and `utilities.help` when clicked. See [Client-side routing](#client-side-routing). |
 | `skipToContentLabel` | `string` | `"Skip to main content"` | Accessible label for the skip link. |
 | `aria-label` | `string` | Auto-generated | Accessible label for the header landmark. |
 
@@ -211,6 +213,68 @@ interface UtilityConfig {
   reportBug?: { onClick: () => void; label?: string };
   help?: { href?: string; onClick?: () => void; label?: string };
   account?: { onClick: () => void; label?: string };
+}
+```
+
+## Client-side routing
+
+By default the header's links are plain `<a href>` elements and the `href`-based buttons set `window.location.href`, so every click loads a new page. Single-page apps should pass their router to the header so navigation stays client-side:
+
+- **`linkAs`** renders the title (`homeHref`) and `navigation` links with your router's link component, using Carbon's `as` prop. The component receives `href` and `children`, plus Carbon's `className`, `ref`, `tabIndex` and `aria-current`, and must pass them on to the `<a>` it renders.
+- **`onNavigate`** receives the `href` of `admin`, `actions` and `utilities.help` when they're clicked. These are buttons, so they can't use `linkAs`. An action's own `onClick` still takes precedence.
+
+`href` values are passed to your link component unchanged, so with a router they should be router paths (for example `/models`). The router adds its base path. Without `linkAs`, they're used as-is in `<a href>`.
+
+If the link component sets `aria-current="page"` on the active link, as TanStack Router's `Link` and React Router's `NavLink` do, Carbon styles that navigation item as the current page.
+
+### TanStack Router
+
+`Link` takes `to` instead of `href`, so wrap it:
+
+```tsx
+import { forwardRef, type AnchorHTMLAttributes } from 'react';
+import { Link, useNavigate } from '@tanstack/react-router';
+import { AppHeader } from '@swapps/ui';
+
+const RouterLink = forwardRef<HTMLAnchorElement, AnchorHTMLAttributes<HTMLAnchorElement>>(
+  function RouterLink({ href = '', ...props }, ref) {
+    return <Link ref={ref} to={href} {...props} />;
+  }
+);
+
+function Header() {
+  const navigate = useNavigate();
+  return (
+    <AppHeader
+      appTitle="Experiment Tracker"
+      homeHref="/"
+      navigation={[{ label: 'Experiments', href: '/experiments' }]}
+      actions={[{ label: 'New Entry', href: '/new', primary: true }]}
+      linkAs={RouterLink}
+      onNavigate={(href) => navigate({ to: href })}
+    />
+  );
+}
+```
+
+`Link` preloads routes on hover when the router has `defaultPreload: 'intent'`. It also sets `aria-current="page"` and an `active` class on the link for the current route, or on any route below it unless you pass `activeOptions={{ exact: true }}`.
+
+### React Router
+
+```tsx
+import { forwardRef, type AnchorHTMLAttributes } from 'react';
+import { NavLink, useNavigate } from 'react-router';
+import { AppHeader } from '@swapps/ui';
+
+const RouterLink = forwardRef<HTMLAnchorElement, AnchorHTMLAttributes<HTMLAnchorElement>>(
+  function RouterLink({ href = '', ...props }, ref) {
+    return <NavLink ref={ref} to={href} {...props} />;
+  }
+);
+
+function Header() {
+  const navigate = useNavigate();
+  return <AppHeader appTitle="Experiment Tracker" linkAs={RouterLink} onNavigate={navigate} />;
 }
 ```
 
@@ -275,7 +339,7 @@ Utility icons are from `@carbon/icons-react`: `Light`, `Asleep`, `Debug`, `Help`
 ## Known limitations
 
 - **Mobile responsiveness** — The header does not yet include a hamburger menu for mobile viewports. This is planned.
-- **Active nav state** — Navigation items do not currently indicate the active page. This requires router integration.
+- **Active nav state** — Navigation items indicate the active page only when `linkAs` is a router link that sets `aria-current="page"` (see [Client-side routing](#client-side-routing)). With plain anchors there's no active state.
 - **Sub-menus** — Dropdown sub-navigation is not yet supported.
 - **Header panels** — Expandable right-side panels (e.g., for notifications or account details) are not yet implemented.
 
