@@ -17,17 +17,17 @@ export function SWAPPSThemeProvider({
 }: SWAPPSThemeProviderProps) {
   const carbonTheme = appearanceToCarbonTheme(config.appearance);
 
+  const { primaryColor, accentColor } = config.branding;
   const brandStyles = useMemo(() => {
     const vars: Record<string, string> = {};
-    const { branding } = config;
-    if (branding.primaryColor) {
-      vars["--swapps-brand-primary"] = branding.primaryColor;
+    if (primaryColor) {
+      vars["--swapps-brand-primary"] = primaryColor;
     }
-    if (branding.accentColor) {
-      vars["--swapps-brand-accent"] = branding.accentColor;
+    if (accentColor) {
+      vars["--swapps-brand-accent"] = accentColor;
     }
     return vars;
-  }, [config.branding.primaryColor, config.branding.accentColor]);
+  }, [primaryColor, accentColor]);
 
   const contextValue = useMemo(
     () => ({

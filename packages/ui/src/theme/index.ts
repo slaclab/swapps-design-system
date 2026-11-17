@@ -1,3 +1,5 @@
+import "./tokens.css";
+
 export type {
   CarbonTheme,
   Appearance,

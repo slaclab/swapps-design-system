@@ -109,6 +109,8 @@ export function baseChartOption(
       },
     },
     legend: {
+      // ECharts 6 defaults the legend to the bottom, where the x-axis name sits; keep it above the grid.
+      top: 0,
       textStyle: {
         color: theme.legendText,
         fontFamily: "'IBM Plex Sans', sans-serif",

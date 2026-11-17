@@ -326,7 +326,7 @@ export default function ThemeConfigurator() {
         <ComponentPreview label="AppHeader Preview" category="ui">
           <AppHeader
             appTitle="Example Application"
-            navItems={[
+            navigation={[
               { label: "Dashboard", href: "#" },
               { label: "Data", href: "#" },
               { label: "Settings", href: "#" },

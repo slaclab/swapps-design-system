@@ -2,7 +2,7 @@
   "name": "@swapps/ui",
   "version": "0.1.0",
   "private": true,
-  "description": "SWAPPS Design System — Reusable React components built on IBM Carbon",
+  "description": "SWAPPS Design System \u2014 Reusable React components built on IBM Carbon",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -13,10 +13,14 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
-    "./styles": "./dist/styles.css"
+    "./styles": {
+      "types": "./styles.d.ts",
+      "default": "./dist/index.css"
+    }
   },
   "files": [
-    "dist"
+    "dist",
+    "styles.d.ts"
   ],
   "scripts": {
     "build": "tsup",
@@ -31,20 +35,21 @@
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
-    "@carbon/icons-react": "^11.90.0",
-    "@carbon/react": "^1.118.0"
+    "@carbon/icons-react": "^11.92.0",
+    "@carbon/react": "^1.120.0"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/react": "^16.3.0",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "jsdom": "^26.1.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "sass": "^1.87.0",
-    "tsup": "^8.5.0",
-    "typescript": "^5.8.3",
-    "vitest": "^3.2.1"
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "jsdom": "^31.0.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "sass": "^1.108.2",
+    "tsup": "^9.0.0",
+    "typescript": "~6.0.3",
+    "vitest": "^5.1.0"
   }
 }

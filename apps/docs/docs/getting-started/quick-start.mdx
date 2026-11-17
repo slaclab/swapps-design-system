@@ -43,12 +43,13 @@ yarn add @swapps/ui
 </TabItem>
 </Tabs>
 
-## 2. Load Carbon styles
+## 2. Load styles
 
-SWAPPS components are built on IBM Carbon and require Carbon's stylesheet. Add this import to your application's entry point:
+SWAPPS components are built on IBM Carbon and require Carbon's stylesheet, plus the SWAPPS stylesheet for the components' own styles and the `--swapps-*` [theme tokens](/docs/development/styling#swapps-theme-tokens). Add these imports to your application's entry point:
 
 ```tsx title="src/main.tsx"
 import '@carbon/react/es/styles.css';
+import '@swapps/ui/styles';
 ```
 
 ## 3. Use your first component

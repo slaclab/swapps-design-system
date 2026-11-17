@@ -48,7 +48,8 @@ The base option includes:
 | `fontFamily` | IBM Plex Sans | Matches Carbon typography |
 | `grid` | `{ top: 40, bottom: 60, left: 70, right: 20 }` | Room for axis labels and legend |
 | `tooltip` | Dashed crosshair, themed colors | Consistent tooltip styling |
-| `legend` | Themed text color | Readable in both themes |
+| `color` | `config.colors`, or ECharts' default palette when omitted | Pass [`CATEGORICAL_PALETTE`](/docs/components/charts-visualization/palettes) for Carbon colors; ECharts 6 changed its default palette |
+| `legend` | At the top, themed text color | Sits in the space `grid.top` reserves (ECharts 6 otherwise defaults it to the bottom); readable in both themes |
 
 ## chartAxisStyle
 

@@ -5,6 +5,31 @@ title: Changelog
 
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- **`@swapps/charts` requires ECharts 6** (peer `echarts@^6.0.0`, `echarts-for-react@^3.0.4`).
+  - `baseChartOption` now pins the legend to the top, as in ECharts 5. ECharts 6 moved it to the bottom, where it would overlap the x-axis name.
+  - Charts without `colors` use ECharts 6's new default palette. Pass `CATEGORICAL_PALETTE` for Carbon colors.
+  - Axis labels and names now avoid overflowing or overlapping by default, per the [upgrade guide](https://echarts.apache.org/handbook/en/basics/release-note/v6-upgrade-guide/).
+- **Dependencies updated** to their latest versions:
+  - Carbon 1.120, Vitest 5, jsdom 31, `@testing-library/jest-dom` 7 (now with an explicit `@testing-library/dom`), tsup 9.
+  - TypeScript 6.0 in every package (it was 5.9 in the packages).
+- **pnpm 12 and Node.js 22.12+** are now required to develop the design system (tsup 9, Vitest 5 and jsdom 31 need Node 22). CI runs Node 24.
+  - `pnpm-workspace.yaml` lists which dependency install scripts may run. The IBM telemetry scripts stay off, as they were under pnpm 10.
+
+### Fixed
+
+- **`@swapps/ui/styles`** pointed at `dist/styles.css`, which was never built. It now points at `dist/index.css`, which contains the component styles and the `--swapps-*` tokens.
+- **`--swapps-*` tokens** (brand, status, visualization) were documented but never loaded. `tokens.css` is now part of `@swapps/ui/styles`, and the source is imported by the theme module.
+- **`SWAPPSThemeProvider`** memoized the brand styles on `config.branding.*` while reading `config`, which tripped `react-hooks/exhaustive-deps`.
+- **`pnpm typecheck`** failed on a clean checkout because `@swapps/charts` and the docs resolve `@swapps/ui`/`@swapps/controls` types from their unbuilt `dist/`. It now builds them first.
+  - CI also builds `@swapps/charts` and runs the typecheck.
+  - The root `build` now includes charts.
+- **The docs site's Theme Configurator** passed a `navItems` prop that doesn't exist, and the site didn't load the `@swapps/ui` stylesheet.
+- **Package status pages** listed `@swapps/controls`, `@swapps/charts`, `AppShell` and the theme provider as planned, though they ship. Affected pages: Choose Your Components, Components overview, Roadmap, Carbon Components.
+
 ## 0.1.0 — Initial foundation
 
 ### Added

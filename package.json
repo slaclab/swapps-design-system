@@ -1,18 +1,19 @@
 {
   "name": "swapps-design-system",
   "private": true,
-  "packageManager": "pnpm@10.8.0",
+  "packageManager": "pnpm@12.21.0",
   "engines": {
-    "node": ">=20"
+    "node": ">=22.12"
   },
   "scripts": {
     "dev:docs": "pnpm --filter docs dev",
     "build:docs": "pnpm build:controls && pnpm --filter docs build",
     "build:ui": "pnpm --filter @swapps/ui build",
     "build:controls": "pnpm --filter @swapps/controls build",
+    "build:charts": "pnpm --filter @swapps/charts build",
     "test": "pnpm --filter @swapps/ui test",
-    "typecheck": "pnpm -r run typecheck",
-    "build": "pnpm build:ui && pnpm build:controls && pnpm build:docs",
+    "typecheck": "pnpm build:ui && pnpm build:controls && pnpm -r run typecheck",
+    "build": "pnpm build:ui && pnpm build:controls && pnpm build:charts && pnpm build:docs",
     "clean": "pnpm -r run clean"
   }
 }

@@ -1,3 +1,33 @@
 packages:
   - "apps/*"
   - "packages/*"
+
+# pnpm 11+ requires an explicit decision for dependency install scripts.
+# Carbon/IBM Plex scripts only send IBM telemetry and core-js prints a funding notice;
+# pnpm 10 skipped all of these, so keep them off. The rest set up native binaries.
+allowBuilds:
+  '@carbon/colors': false
+  '@carbon/feature-flags': false
+  '@carbon/grid': false
+  '@carbon/icon-helpers': false
+  '@carbon/icons-react': false
+  '@carbon/layout': false
+  '@carbon/motion': false
+  '@carbon/react': false
+  '@carbon/styles': false
+  '@carbon/themes': false
+  '@carbon/type': false
+  '@carbon/utilities': false
+  '@ibm/plex': false
+  '@ibm/plex-mono': false
+  '@ibm/plex-sans': false
+  '@ibm/plex-sans-arabic': false
+  '@ibm/plex-sans-devanagari': false
+  '@ibm/plex-sans-hebrew': false
+  '@ibm/plex-sans-thai': false
+  '@ibm/plex-sans-thai-looped': false
+  '@ibm/plex-serif': false
+  '@parcel/watcher': true
+  '@swc/core': true
+  core-js: false
+  esbuild: true

@@ -29,8 +29,8 @@ swapps-design-system/
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) 20 or later
-- [pnpm](https://pnpm.io/) 10 or later
+- [Node.js](https://nodejs.org/) 22.12 or later
+- [pnpm](https://pnpm.io/) 12 or later (`corepack enable` picks up the version in `package.json`)
 
 ### Install dependencies
 
