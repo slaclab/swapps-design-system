@@ -1,0 +1,218 @@
+---
+sidebar_position: 5
+title: Alarms
+---
+
+# Alarms
+
+Alarm indication helps operators detect and respond to abnormal situations. The SWAPPS alarm system follows PAS High Performance HMI principles, adapted for EPICS-based scientific control systems.
+
+## Severity levels
+
+export const Swatch = ({light, dark}) => (
+  <span style={{display: 'inline-flex', gap: 4, alignItems: 'center'}}>
+    <span style={{width: 18, height: 18, borderRadius: 3, background: light, border: '1px solid #c6c6c6', display: 'inline-block'}} title={`Light: ${light}`} />
+    <span style={{width: 18, height: 18, borderRadius: 3, background: dark, border: '1px solid #525252', display: 'inline-block'}} title={`Dark: ${dark}`} />
+  </span>
+);
+
+| Severity | PAS Priority | Color | Token | Meaning |
+|---|---|---|---|---|
+| `major` | 1 — Critical | <Swatch light="#da1e28" dark="#fa4d56" /> | `--swapps-alarm-major` | Immediate attention required |
+| `minor` | 2 — Low | <Swatch light="#f1c21b" dark="#fddc69" /> | `--swapps-alarm-minor` | Outside normal range |
+| `warning` | 3 — Medium | <Swatch light="#ff832b" dark="#ffb784" /> | `--swapps-alarm-warning` | Approaching critical threshold |
+| `invalid` | 4 — Diagnostic | <Swatch light="#a56eff" dark="#be95ff" /> | `--swapps-alarm-invalid` | Sensor or data quality issue |
+| `disconnected` | — | <Swatch light="#8d8d8d" dark="#a8a8a8" /> | `--swapps-alarm-disconnected` | Connection lost |
+| `none` | — | — | — | No alarm |
+
+Each token also has a `-border` variant (e.g., `--swapps-alarm-major-border`).
+
+:::info EPICS mapping
+EPICS `HIHI`/`LOLO` thresholds → `major`. `HIGH`/`LOW` → `minor`. `INVALID` severity → `invalid`.
+:::
+
+## Core principles
+
+From PAS *High Performance HMI* (Hollifield & Perez, 2015):
+
+:::warning Color is never the sole indicator
+Every alarm must pair color with at least one other cue — shape, text, border style, or position. Many operators have color-vision deficiencies.
+:::
+
+**Reserve bright colors for abnormal states.** A well-running system should look calm. If red and yellow appear during normal operation, alarms lose their visual impact.
+
+**Redundant coding at a glance:**
+
+export const BadgeDemo = () => (
+  <div style={{display: 'flex', gap: 24, alignItems: 'center', padding: '16px 0', flexWrap: 'wrap'}}>
+    {[
+      {shape: '50%', color: '#da1e28', num: '1', label: 'Major'},
+      {shape: '50%', color: '#f1c21b', num: '2', label: 'Minor', textColor: '#161616'},
+      {shape: '4px', color: '#ff832b', num: '3', label: 'Warning', textColor: '#161616'},
+      {shape: '2px', color: '#a56eff', num: '4', label: 'Invalid'},
+    ].map(b => (
+      <div key={b.label} style={{display: 'flex', alignItems: 'center', gap: 8}}>
+        <span style={{
+          width: 24, height: 24, borderRadius: b.shape, background: b.color,
+          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+          color: b.textColor || '#fff', fontSize: 13, fontWeight: 700, fontFamily: 'IBM Plex Sans, sans-serif',
+          transform: b.label === 'Minor' ? 'rotate(45deg)' : undefined,
+        }}>
+          <span style={{transform: b.label === 'Minor' ? 'rotate(-45deg)' : undefined}}>{b.num}</span>
+        </span>
+        <span style={{fontSize: 13, color: '#525252'}}>{b.label}</span>
+      </div>
+    ))}
+  </div>
+);
+
+<BadgeDemo />
+
+Each badge encodes priority through **color + shape + number** simultaneously, following PAS Figure 12.
+
+## Visual application methods
+
+export const BorderDemo = () => (
+  <div style={{display: 'flex', gap: 16, padding: '16px 0', flexWrap: 'wrap'}}>
+    {[
+      {label: 'No alarm', border: '1px solid #e0e0e0', bg: '#f4f4f4'},
+      {label: 'Minor', border: '2px solid #f1c21b', bg: '#f4f4f4'},
+      {label: 'Warning', border: '2px solid #ff832b', bg: '#f4f4f4'},
+      {label: 'Major', border: '2px solid #da1e28', bg: '#f4f4f4'},
+      {label: 'Invalid', border: '2px solid #a56eff', bg: '#f4f4f4'},
+      {label: 'Suppressed', border: '2px dashed #da1e28', bg: '#f4f4f4'},
+    ].map(b => (
+      <div key={b.label} style={{
+        width: 88, height: 56, border: b.border, borderRadius: 4,
+        background: b.bg, display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: 11, color: '#525252', fontFamily: 'IBM Plex Mono, monospace',
+      }}>{b.label}</div>
+    ))}
+  </div>
+);
+
+### Border
+
+The most common method. A colored border appears when an alarm is active.
+
+<BorderDemo />
+
+- **Solid border** — active alarm
+- **Dashed border** — suppressed or shelved alarm (still visible, clearly differentiated)
+
+Used by: `PVSymbol`, `ByteIndicator`, `MultiStateIndicator`, `EmbeddedDisplay`
+
+### Text color
+
+The value itself takes on the alarm color, distinct from the normal dark-blue value color.
+
+export const TextDemo = () => (
+  <div style={{display: 'flex', gap: 24, padding: '12px 0', fontFamily: 'IBM Plex Mono, monospace', fontSize: 14, fontWeight: 600}}>
+    <span><span style={{color: '#0000d7'}}>480.1</span> <span style={{fontWeight: 400, color: '#525252'}}>psi</span></span>
+    <span><span style={{color: '#f1c21b'}}>480.1</span> <span style={{fontWeight: 400, color: '#525252'}}>psi</span> <span style={{fontSize: 11, color: '#8d8d8d'}}>(minor)</span></span>
+    <span><span style={{color: '#da1e28'}}>480.1</span> <span style={{fontWeight: 400, color: '#525252'}}>psi</span> <span style={{fontSize: 11, color: '#8d8d8d'}}>(major)</span></span>
+  </div>
+);
+
+<TextDemo />
+
+Used by: `PVLabel`
+
+### Analog indicator zones
+
+For gauges and scales, alarm thresholds are shown as colored zones on the range itself.
+
+export const GaugeZones = () => (
+  <svg width="280" height="48" viewBox="0 0 280 48" style={{display: 'block', margin: '12px 0'}}>
+    <rect x="0" y="12" width="280" height="24" rx="3" fill="#e0e0e0" />
+    <rect x="20" y="12" width="60" height="24" fill="#da1e28" opacity="0.25" />
+    <rect x="80" y="12" width="40" height="24" fill="#f1c21b" opacity="0.25" />
+    <rect x="120" y="12" width="80" height="24" fill="#bbdefb" opacity="0.5" />
+    <rect x="200" y="12" width="40" height="24" fill="#f1c21b" opacity="0.25" />
+    <rect x="240" y="12" width="40" height="24" rx="3" fill="#da1e28" opacity="0.25" />
+    <line x1="160" y1="10" x2="160" y2="38" stroke="#161616" strokeWidth="2" />
+    <text x="10" y="9" fontSize="9" fill="#8d8d8d" fontFamily="IBM Plex Sans">LOLO</text>
+    <text x="90" y="9" fontSize="9" fill="#8d8d8d" fontFamily="IBM Plex Sans">LOW</text>
+    <text x="140" y="9" fontSize="9" fill="#24a148" fontFamily="IBM Plex Sans">Normal</text>
+    <text x="205" y="9" fontSize="9" fill="#8d8d8d" fontFamily="IBM Plex Sans">HIGH</text>
+    <text x="245" y="9" fontSize="9" fill="#8d8d8d" fontFamily="IBM Plex Sans">HIHI</text>
+  </svg>
+);
+
+<GaugeZones />
+
+Used by: `AnalogGauge`, `ScaleIndicator`
+
+## Flashing behavior
+
+Per PAS guidance, animation is reserved **only** for unacknowledged alarms:
+
+| State | Visual |
+|---|---|
+| Unacknowledged | Indicator flashes (motion is detected in peripheral vision) |
+| Acknowledged, active | Static indicator in alarm color |
+| Cleared | Indicator disappears |
+
+:::caution Not yet implemented
+Unacknowledged alarm flashing is not yet implemented in SWAPPS controls. This documents the target behavior.
+:::
+
+## Dark mode
+
+Alarm tokens automatically adapt to the active Carbon theme. Dark variants use brighter, higher-value colors to maintain the same visual urgency on dark backgrounds.
+
+export const ThemeCompare = () => (
+  <div style={{display: 'flex', gap: 0, borderRadius: 6, overflow: 'hidden', margin: '12px 0', border: '1px solid #e0e0e0'}}>
+    <div style={{flex: 1, background: '#d5d5d5', padding: 16}}>
+      <div style={{fontSize: 11, color: '#525252', marginBottom: 8, fontFamily: 'IBM Plex Sans'}}>Light (g10)</div>
+      <div style={{display: 'flex', gap: 6}}>
+        {['#da1e28','#f1c21b','#ff832b','#a56eff','#8d8d8d'].map(c => (
+          <span key={c} style={{width: 28, height: 28, borderRadius: 3, background: c, display: 'inline-block'}} />
+        ))}
+      </div>
+    </div>
+    <div style={{flex: 1, background: '#262626', padding: 16}}>
+      <div style={{fontSize: 11, color: '#c6c6c6', marginBottom: 8, fontFamily: 'IBM Plex Sans'}}>Dark (g90)</div>
+      <div style={{display: 'flex', gap: 6}}>
+        {['#fa4d56','#fddc69','#ffb784','#be95ff','#a8a8a8'].map(c => (
+          <span key={c} style={{width: 28, height: 28, borderRadius: 3, background: c, display: 'inline-block'}} />
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
+<ThemeCompare />
+
+Always use `--swapps-alarm-*` tokens instead of hardcoded hex values so colors adapt automatically.
+
+## Usage
+
+```tsx
+import { PVLabel, PVSymbol } from '@swapps/controls';
+import type { AlarmSeverity } from '@swapps/controls';
+
+// Border indication
+<PVSymbol symbol={pumpSymbol} alarmSeverity="major" />
+
+// Text color indication
+<PVLabel value={480.1} units="psi" alarmSeverity="minor" />
+```
+
+JavaScript constants for SVG or non-CSS contexts:
+
+```ts
+import {
+  ALARM_COLORS,       // light theme hex values
+  ALARM_COLORS_DARK,  // dark theme hex values
+  ALARM_BORDER_COLORS,
+  ALARM_BORDER_COLORS_DARK,
+} from '@swapps/controls';
+```
+
+## References
+
+- Hollifield, B. & Perez, H. (2015). *High Performance HMI Principles and Best Practices.* PAS.
+- Hollifield, B. & Perez, H. (2015). *High Performance HMI Case Studies, Recommendations, and Standards.* PAS.
+- ANSI/ISA-18.2. *Management of Alarm Systems for the Process Industries.*
+- ANSI/ISA-101.01-2015. *Human Machine Interfaces for Process Automation Systems.*

@@ -24,6 +24,18 @@
   --swapps-status-disconnected: #8d8d8d;
   --swapps-status-unknown: #a8a8a8;
 
+  /* ── Alarm tokens (controls & indicators, theme-aware) ── */
+  --swapps-alarm-minor: #f1c21b;
+  --swapps-alarm-minor-border: #f1c21b;
+  --swapps-alarm-warning: #ff832b;
+  --swapps-alarm-warning-border: #ff832b;
+  --swapps-alarm-major: #da1e28;
+  --swapps-alarm-major-border: #da1e28;
+  --swapps-alarm-invalid: #a56eff;
+  --swapps-alarm-invalid-border: #a56eff;
+  --swapps-alarm-disconnected: #8d8d8d;
+  --swapps-alarm-disconnected-border: #8d8d8d;
+
   /* ── Visualization palette (chart series, independent of branding) ── */
   --swapps-viz-series-1: #6929c4;
   --swapps-viz-series-2: #1192e8;
@@ -33,4 +45,23 @@
   --swapps-viz-series-6: #570408;
   --swapps-viz-series-7: #198038;
   --swapps-viz-series-8: #002d9c;
+}
+
+/*
+ * Dark-theme alarm overrides.
+ * Brighter variants ensure legibility on dark backgrounds.
+ * Carbon maps: g90 = dark sidebar, g100 = full dark.
+ */
+[data-carbon-theme="g90"],
+[data-carbon-theme="g100"] {
+  --swapps-alarm-minor: #fddc69;
+  --swapps-alarm-minor-border: #fddc69;
+  --swapps-alarm-warning: #ffb784;
+  --swapps-alarm-warning-border: #ffb784;
+  --swapps-alarm-major: #fa4d56;
+  --swapps-alarm-major-border: #fa4d56;
+  --swapps-alarm-invalid: #be95ff;
+  --swapps-alarm-invalid-border: #be95ff;
+  --swapps-alarm-disconnected: #a8a8a8;
+  --swapps-alarm-disconnected-border: #a8a8a8;
 }

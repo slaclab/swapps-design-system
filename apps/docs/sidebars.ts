@@ -93,6 +93,7 @@ const sidebars: SidebarsConfig = {
         "patterns/loading-states",
         "patterns/empty-states",
         "patterns/error-handling",
+        "patterns/alarms",
       ],
     },
     {

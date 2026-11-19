@@ -32,4 +32,9 @@ export { TemplateRepeater } from "./components/TemplateRepeater";
 export type { TemplateRepeaterProps } from "./components/TemplateRepeater";
 
 export type { AlarmSeverity, BaseWidgetProps } from "./types/alarm";
-export { ALARM_COLORS, ALARM_BORDER_COLORS } from "./types/alarm";
+export {
+  ALARM_COLORS,
+  ALARM_BORDER_COLORS,
+  ALARM_COLORS_DARK,
+  ALARM_BORDER_COLORS_DARK,
+} from "./types/alarm";

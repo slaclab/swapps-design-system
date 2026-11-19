@@ -54,6 +54,20 @@ Fixed, system-defined colors for functional states:
 
 These remain consistent regardless of the selected laboratory. See [Themes overview](/docs/themes/overview) for a visual reference.
 
+### Alarm tokens
+
+Theme-aware colors for alarm severity indication on scientific controls. These tokens adapt between light and dark themes to maintain legibility and visual urgency.
+
+| Token | Light | Dark | Severity |
+|---|---|---|---|
+| `--swapps-alarm-minor` | `#f1c21b` | `#fddc69` | Low priority |
+| `--swapps-alarm-warning` | `#ff832b` | `#ffb784` | Medium priority |
+| `--swapps-alarm-major` | `#da1e28` | `#fa4d56` | High priority |
+| `--swapps-alarm-invalid` | `#a56eff` | `#be95ff` | Diagnostic |
+| `--swapps-alarm-disconnected` | `#8d8d8d` | `#a8a8a8` | Connection lost |
+
+Each token also has a `-border` variant (e.g., `--swapps-alarm-major-border`). For detailed guidance on alarm colors, application methods, and the design principles behind them, see the [Alarms pattern](/docs/patterns/alarms).
+
 ### Visualization palette
 
 Chart series colors optimized for data readability and accessibility:
